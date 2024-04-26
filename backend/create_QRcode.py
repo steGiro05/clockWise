@@ -11,3 +11,4 @@ qr.make(fit=True)
 
 img = qr.make_image(fill_color="black", back_color="white")
 img.save('img/qr.png')
+print('dio ladro')
