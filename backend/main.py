@@ -1,19 +1,36 @@
 from flask import Flask, request, jsonify
-from db import * 
-import qrcode
 import subprocess
+import time
 
-app=Flask(__name__)
+app = Flask(__name__)
 
 def generate_qrcode():
     # Chiamare lo script generateqrcode
     subprocess.run(["python", "create_QRcode.py"])
 
-@app.before_first_request
-def before_first_request():
-    # Questo verrà eseguito solo una volta, prima della prima richiesta HTTP
-    generate_qrcode()
-    
+def init_app():
+    """Initialize the core application."""
+    app = Flask(__name__)
+
+
+    with app.app_context():
+        # before_first_request equivalent here
+        try:
+            while True:
+                generate_qrcode()
+                print('generate_qrcode() called')
+                time.sleep(10)
+        except:
+            print ('exception occurred')
+            return
+
+        # Include our Routes
+
+        # Register Blueprints
+        #app.register_blueprint(auth.auth_bp)
+        #app.register_blueprint(admin.admin_bp) 
+
+        return app
 
 @app.route('/')
 def hello_world():
@@ -22,9 +39,10 @@ def hello_world():
 
 @app.route('/get_QRcode')
 def get_QRcode():
-    
-    return jsonify(data)
+    return jsonify('ciao')
 
-if __name__=='__main__':
+app=init_app()
+
+if __name__ == '__main__':
     app.run(debug=True)
-    
+
