@@ -1,12 +1,17 @@
 from flask import Flask, request, jsonify,abort, render_template, send_file
-from utils import create_qr_code, validate_qr_code
 from flask_httpauth import HTTPBasicAuth
+from flask_socketio import SocketIO
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_admin
+from utils import create_qr_code, validate_qr_code
 
 app=Flask(__name__)
+app.config['DEBUG']=True
+app.config['SECRET_KEY']='secret'
 auth=HTTPBasicAuth()
+socketio = SocketIO(app)
 
+    
 
 users={
     'admin':generate_password_hash('SuperSecurePW')
@@ -37,13 +42,13 @@ def create_session_token():
 
     if(validate_qr_code(user_code)):
         if not create_qr_code(): abort(500)
+        #sending mesage to client to refresh qrcode
+        socketio.emit('session_created')
         return jsonify(message='codice valido')
 
     return jsonify(message='codice non valido')
 
     
 
-    
-
 if __name__=='__main__':
-    app.run(debug=True)
+    socketio.run(app)
