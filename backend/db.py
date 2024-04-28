@@ -52,3 +52,20 @@ def get_users():
 
     db.close()
     return data
+
+#table admin
+def get_admin():
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute('SELECT * FROM admin')
+    data=[]
+
+    for row in cursor:
+        data.append({
+            'username':row[0],
+            'hash':row[1]
+        }) 
+    db.close()
+    
+    if (len(data)!=1):return
+    return data[0]
