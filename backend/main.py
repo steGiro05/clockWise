@@ -1,48 +1,21 @@
-from flask import Flask, request, jsonify
-import subprocess
-import time
+from flask import Flask, request, jsonify,abort
+from utils import create_qr_code, validate_qr_code
 
-app = Flask(__name__)
-
-def generate_qrcode():
-    # Chiamare lo script generateqrcode
-    subprocess.run(["python", "create_QRcode.py"])
-
-def init_app():
-    """Initialize the core application."""
-    app = Flask(__name__)
-
-
-    with app.app_context():
-        # before_first_request equivalent here
-        try:
-            while True:
-                generate_qrcode()
-                print('generate_qrcode() called')
-                time.sleep(10)
-        except:
-            print ('exception occurred')
-            return
-
-        # Include our Routes
-
-        # Register Blueprints
-        #app.register_blueprint(auth.auth_bp)
-        #app.register_blueprint(admin.admin_bp) 
-
-        return app
+app=Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    print('ciao')
     return jsonify(message='setup completed!!')
 
-@app.route('/get_QRcode')
-def get_QRcode():
-    return jsonify('ciao')
+@app.route('/create_session_token')
+def create_session_token():
+    code=request.args.get('qr_code')
 
-app=init_app()
+    if(validate_qr_code(code)):
+        create_qr_code()
+        return jsonify(message='codice valido')
 
-if __name__ == '__main__':
+    return jsonify(message='codice non valido')
+
+if __name__=='__main__':
     app.run(debug=True)
-
