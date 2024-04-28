@@ -1,7 +1,5 @@
 import sqlite3 as sq
 
-
-
 #table qr_code
 def get_qr_code():
     db=sq.connect('data.db')
@@ -34,8 +32,6 @@ def post_qr_code(new_qr_code):
     finally:
         # Chiudi la connessione al database
         db.close()
-
-    
 
 #table users
 def get_users():

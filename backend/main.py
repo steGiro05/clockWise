@@ -1,3 +1,4 @@
+#IMPORT
 from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_httpauth import HTTPBasicAuth
 from flask_socketio import SocketIO
@@ -5,17 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_admin
 from utils import create_qr_code, validate_qr_code
 
+#INITIALIZATION
 app=Flask(__name__)
 app.config['DEBUG']=True
 app.config['SECRET_KEY']='secret'
 auth=HTTPBasicAuth()
 socketio = SocketIO(app)
 
-    
-
-users={
-    'admin':generate_password_hash('SuperSecurePW')
-}
+#ROUTES
 @auth.verify_password
 def verify_password(username, password):
     admin=get_admin()

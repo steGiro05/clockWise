@@ -1,10 +1,9 @@
 import qrcode,random,string
 from db import get_qr_code, post_qr_code
 
-LENGHT=16
+QR_CODE_LENGHT=16
 
 def validate_qr_code(user_code):
-
     data=get_qr_code()
     qr_code=data['code']
     if(user_code==qr_code):return True
@@ -13,7 +12,7 @@ def validate_qr_code(user_code):
 
 def create_qr_code():
     characters = string.ascii_letters + string.digits
-    new_qr_code=''.join(random.choice(characters) for _ in range(LENGHT))
+    new_qr_code=''.join(random.choice(characters) for _ in range(QR_CODE_LENGHT))
     qr = qrcode.QRCode(
     version=1,
     error_correction=qrcode.constants.ERROR_CORRECT_L,
