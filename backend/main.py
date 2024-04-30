@@ -1,6 +1,8 @@
 #IMPORT
 #basic request response for apis
 from flask import Flask, request, jsonify,abort, render_template, send_file
+#header allow origin
+from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_admin, get_user_byid, sign_in
@@ -23,6 +25,8 @@ auth=HTTPBasicAuth()
 
 #users authentication
 login_manager=LoginManager(app) 
+
+CORS(app, supports_credentials=True)
 
 @login_manager.user_loader
 def load_user(uid):
