@@ -60,7 +60,19 @@ def sign_in(username,password):
         return None
     return User(data[0],data[1])
     
-
+#table activeSessionTokens
+def upload_token(token):
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    try:
+        cursor.execute("INSERT into activeSessionTokens (code) values (?)",[token])
+        db.commit()
+    except: 
+        db.rollback()
+        return False
+    finally:
+        db.close()
+        return True
 
 #table admin
 def get_admin():
@@ -76,5 +88,5 @@ def get_admin():
         }) 
     db.close()
     
-    if (len(data)!=1):return
+    if (len(data)!=1):return None
     return data[0]

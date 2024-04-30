@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in
+from db import get_admin, get_user_byid, sign_in, upload_token
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -13,7 +13,7 @@ from flask_login import LoginManager,login_user, logout_user, current_user, logi
 #dynamic admin pages
 from flask_socketio import SocketIO
 #utils
-from utils import create_qr_code, validate_qr_code
+from utils import create_qr_code, validate_qr_code, craft_token
 
 #INITIALIZATION
 app=Flask(__name__)
@@ -98,12 +98,19 @@ def logout():
     
 #gestione pause e entrate
 @app.route('/create_session_token')
+@login_required
 def create_session_token():
     user_code=request.args.get('qr_code')
     if not user_code: abort(400)
 
     if(validate_qr_code(user_code)):
+        token=craft_token(current_user.id)
+        #upload del token se non va a buon fine la insert triggeriamo errore
+        if not upload_token(token):
+            abort(500)
+        #controllo che generateqrcode non generi errori
         if not create_qr_code(): abort(500)
+        
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
         return jsonify(message='codice valido')
