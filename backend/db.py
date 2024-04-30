@@ -1,4 +1,6 @@
 import sqlite3 as sq
+from userModel import User
+from werkzeug.security import check_password_hash
 
 #table qr_code
 def get_qr_code():
@@ -34,20 +36,31 @@ def post_qr_code(new_qr_code):
         db.close()
 
 #table users
-def get_users():
+def get_user_byid(uid):
     db=sq.connect('data.db')
     cursor=db.cursor()
-    cursor.execute('SELECT * FROM users')
-    data=[]
-
-    for row in cursor:
-        data.append({
-            'first_name':row[1],
-            'last_name':row[2]
-        }) 
-
+    cursor.execute("SELECT id, username FROM users where id = ?",[uid])
+    data=cursor.fetchone()
     db.close()
-    return data
+    
+    if data is None:
+        return None
+    return User(data[0],data[1])
+
+def sign_in(username,password):
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("SELECT id, username, hash FROM users where username = ? ",[username])
+    data=cursor.fetchone()
+    db.close()
+    
+    if data is None:
+        return None
+    if not check_password_hash(data[2],password):
+        return None
+    return User(data[0],data[1])
+    
+
 
 #table admin
 def get_admin():
