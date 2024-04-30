@@ -1,177 +1,68 @@
-import * as React from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Button } from "react-native";
 
-let token
-const post =  (username, password) => {
-  token = username+password
-  return token
-}
+const postData = {
+  username: "marcussmith",
+  password: "marcussmith",
+};
 
-const getToken = (data) => {
-  if (data == token) {
-    return true
-  }
-}
-
-const AuthContext = React.createContext();
-
-function SplashScreen() {
-  return (
-    <View>
-      <Text>Loading...</Text>
-    </View>
-  );
-}
-
-function HomeScreen() {
-  const { signOut } = React.useContext(AuthContext);
-
-  return (
-    <View>
-      <Text>Signed in!</Text>
-      <Button title="Sign out" onPress={signOut} />
-    </View>
-  );
-}
-
-function SignInScreen() {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-
-  const { signIn } = React.useContext(AuthContext);
-
-  return (
-    <View>
-      <TextInput
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Sign in" onPress={() => signIn({ username, password })} />
-    </View>
-  );
-}
-
-const Stack = createNativeStackNavigator();
-
-export default function App({ navigation }) {
-  const [state, dispatch] = React.useReducer(
-    (prevState, action) => {
-      switch (action.type) {
-        case 'RESTORE_TOKEN':
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          };
-        case 'SIGN_IN':
-          return {
-            ...prevState,
-            isSignout: false,
-            userToken: action.token,
-          };
-        case 'SIGN_OUT':
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-          };
-      }
+const login = async () => {
+  await fetch("http://192.168.56.1:5000/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    {
-      isLoading: true,
-      isSignout: false,
-      userToken: null,
-    }
-  );
-
-  React.useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
-    const bootstrapAsync = async () => {
-      let userToken;
-
-      try {
-        // Restore token stored in `SecureStore` or any other encrypted storage
-        // userToken = await SecureStore.getItemAsync('userToken');
-      } catch (e) {
-        // Restoring token failed
+    body: JSON.stringify(postData),
+    credentials: "include",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Response:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
 
-      // After restoring token, we may need to validate it in production apps
+const getId = async () => {
+  try {
+    const response = await fetch("http://192.168.56.1:5000/get_user", {
+      credentials: "include", // Abilita il supporto dei cookie
+    });
 
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
-    };
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-    bootstrapAsync();
-  }, []);
+    const data = await response.json();
+    console.log("User data:", data);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+};
 
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (data) => {
-        const { username, password } = data;
-
-        // const response = await fetch('https://your-app.com/auth', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     // Add any headers you need here
-        //   },
-        //   body: JSON.stringify({ username, password }),
-        // })
-        //   .then((res) => res.json())
-        //   .then((data) => {
-        //     return data;
-        //   })
-        //   .catch((error) => {
-        //     console.error('Error:', error);
-        //   });
-
-        const response = post(username, password)
-        console.log(response)
-
-        if (response) {
-          dispatch({ type: 'SIGN_IN', token: response });
-        }
-      },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-    }),
-    []
-  );
-
+export default function App() {
+  console.log("started");
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          {state.isLoading ? (
-            // We haven't finished checking for the token yet
-            <Stack.Screen name="Splash" component={SplashScreen} />
-          ) : state.userToken == null ? (
-            // No token found, user isn't signed in
-            <Stack.Screen
-              name="SignIn"
-              component={SignInScreen}
-              options={{
-                title: 'Sign in',
-                // When logging out, a pop animation feels intuitive
-                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-              }}
-            />
-          ) : (
-            // User is signed in
-            <Stack.Screen name="Home" component={HomeScreen} />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthContext.Provider>
+    <View style={styles.container}>
+      <Text>Ciao touri!!</Text>
+      <StatusBar style="auto" />
+      <Button title="Click me!" onPress={login}></Button>
+      <Button title="Click me!" onPress={getId}></Button>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
