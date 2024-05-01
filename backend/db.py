@@ -2,6 +2,10 @@ import sqlite3 as sq
 from userModel import User
 from werkzeug.security import check_password_hash
 
+from datetime import datetime
+
+
+
 #table qr_code
 def get_qr_code():
     db=sq.connect('data.db')
@@ -34,6 +38,7 @@ def post_qr_code(new_qr_code):
     finally:
         # Chiudi la connessione al database
         db.close()
+        
 
 #table users
 def get_user_byid(uid):
@@ -60,19 +65,53 @@ def sign_in(username,password):
         return None
     return User(data[0],data[1])
     
-#table activeSessionTokens
-def upload_token(token):
+#tables activeSessionTokens, activePauseTokens and deletedPauseTokens
+def get_user_state(current_user_id):
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("""
+        SELECT CASE
+                   WHEN EXISTS (SELECT 1 FROM activePauseTokens WHERE fkUser = ?)
+                   THEN 1
+                   ELSE 0
+               END AS result;
+    """, [current_user_id])
+    if cursor.fetchone()[0]:
+        db.close()
+        return 'p'#p stays for pause
+    
+    cursor.execute("""
+        SELECT CASE
+                   WHEN EXISTS (SELECT 1 FROM activeSessionTokens WHERE fkUser = ?)
+                   THEN 1
+                   ELSE 0
+               END AS result;
+    """,[current_user_id])
+    if cursor.fetchone()[0]:
+        db.close()  
+        return 'a'#a stays for active
+    
+    db.close()
+    
+    return None
+
+def upload_token(current_user_id):
+
     db=sq.connect('data.db')
     cursor=db.cursor()
     try:
-        cursor.execute("INSERT into activeSessionTokens (code) values (?)",[token])
+        # Ottenere l'ora corrente in formato CEST
+        now_cest = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Eseguire l'inserimento nel database
+        cursor.execute("INSERT INTO activeSessionTokens (fkUser, created_at) VALUES (?, ?)", (current_user_id, now_cest))
         db.commit()
+        return True 
     except: 
         db.rollback()
         return False
     finally:
         db.close()
-        return True
 
 #table admin
 def get_admin():
