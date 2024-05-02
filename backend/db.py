@@ -95,7 +95,7 @@ def get_user_state(current_user_id):
     
     return None
 
-def upload_token(current_user_id):
+def upload_session_token(current_user_id):
 
     db=sq.connect('data.db')
     cursor=db.cursor()
@@ -112,6 +112,123 @@ def upload_token(current_user_id):
         return False
     finally:
         db.close()
+
+def upload_pause_token(current_user_id):
+    if get_user_state(current_user_id) !='a':
+        return False
+
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    try:
+        # Ottenere l'ora corrente in formato CEST
+        now_cest = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Eseguire l'inserimento nel database
+        cursor.execute("INSERT INTO activePauseTokens (fkUser, created_at) VALUES (?, ?)", (current_user_id, now_cest))
+        db.commit()
+        return True 
+    except: 
+        db.rollback()
+        return False
+    finally:
+        db.close()
+    return
+
+def delete_pause_token(current_user_id):
+    if get_user_state(current_user_id) !='p':
+        return False
+
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor=db.cursor()
+    cursor.execute("SELECT created_at FROM activePauseTokens where fkUser = ?",[current_user_id])
+    data=cursor.fetchone()
+    if not data:
+        return False
+    
+    created_at=data[0]
+
+    cursor.execute("DELETE FROM activePauseTokens WHERE fkUser = ?", [current_user_id])
+    db.commit()
+
+    try:
+        # Ottenere l'ora corrente in formato CEST
+        now_cest = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Eseguire l'inserimento nel database
+        cursor.execute("INSERT INTO deletedPauseTokens (fkUser, created_at, deleted_at) VALUES (?, ?, ?)", (current_user_id,created_at, now_cest))
+        db.commit()
+
+        return True 
+    except: 
+        db.rollback()
+        return False
+    finally:
+        db.close() 
+    return
+
+def delete_session_token(current_user_id):
+    if get_user_state(current_user_id) !='a':
+        return False
+
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor=db.cursor()
+    cursor.execute("SELECT created_at, deleted_at FROM deletedPauseTokens where fkUser = ?",[current_user_id])
+    data=cursor.fetchall()
+    if data:
+        pauses = []
+
+        for item in data:
+            start_time = item[0]
+            end_time = item[1]
+            pauses.append({'start_time': start_time, 'end_time': end_time})
+
+        
+        if(len(pauses)>0):
+            cursor.execute("DELETE FROM deletedPauseTokens WHERE fkUser = ?", [current_user_id])
+            db.commit()
+
+    cursor.execute("""SELECT strftime('%Y-%m-%d', created_at) AS formatted_date,
+                    strftime('%H:%M:%S', created_at) AS hour
+                    FROM activeSessionTokens
+                    WHERE fkUser = ?
+                    """,[current_user_id])
+    
+     
+    session=cursor.fetchone()
+    if not session:
+        return False
+
+    cursor.execute("DELETE FROM activeSessionTokens WHERE fkUser = ?", [current_user_id])
+    session_day = session[0]
+    session_starting_hour = session[1]
+
+    
+    try:
+        # Ottenere l'ora corrente in formato CEST
+        now_cest = datetime.now().strftime('%Y-%m-%d')
+
+        # Eseguire l'inserimento nel database
+        cursor.execute("INSERT INTO records (fkUser, day, entry_time, exit_time) VALUES (?, ?, ?,?)", (current_user_id,session_day,session_starting_hour, now_cest))
+        db.commit()
+
+        if(len(pauses)>0):
+            cursor.execute('SELECT id from records where day = ? and fkUser = ?',[now_cest,current_user_id])
+            recordId=cursor.fetchone[0]
+            for item in pauses:
+                cursor.execute("INSERT INTO pauses (fkRecord,start_time, end_time) VALUES (?,?, ?)", (recordId,item['start_time'],item['end_time']))
+                db.commit()
+
+        return True 
+    except: 
+        db.rollback()
+        return False
+    finally:
+        db.close() 
+    return 
+
+
 
 #table admin
 def get_admin():

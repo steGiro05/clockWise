@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_token, get_user_state
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -120,9 +120,9 @@ def create_session_token():
     user_qr_code=request.args.get('qr_code')
     if not user_qr_code: abort(400)
 
-    if(validate_qr_code(user_qr_code) or True):
+    if(validate_qr_code(user_qr_code)):
         #upload del token se non va a buon fine la insert triggeriamo errore
-        if not upload_token(current_user.id):
+        if not upload_session_token(current_user.id):
             abort(500)
         #controllo che generateqrcode non generi errori
         if not create_qr_code(): abort(500)
@@ -130,9 +130,64 @@ def create_session_token():
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
         return jsonify(message='codice valido')
-
-
+    return jsonify(message='codice non valido')
     
+    
+
+@app.route('/create_pause',methods=['POST'])
+@login_required
+def create_pause():
+    user_qr_code=request.args.get('qr_code')
+    if not user_qr_code: abort(400)
+
+    if(validate_qr_code(user_qr_code)):
+        #upload del token se non va a buon fine la insert triggeriamo errore
+        if not upload_pause_token(current_user.id):
+            abort(500)
+        #controllo che generateqrcode non generi errori
+        if not create_qr_code(): abort(500)
+        
+        #sending mesage to client to refresh qrcode
+        socketio.emit('session_created')
+        return jsonify(message='codice valido')
+    return jsonify(message='codice non valido')
+
+@app.route('/delete_pause',methods=['DELETE'])
+@login_required
+def delete_pause():
+    user_qr_code=request.args.get('qr_code')
+    if not user_qr_code: abort(400)
+
+    if(validate_qr_code(user_qr_code)):
+        #upload del token se non va a buon fine la insert triggeriamo errore
+        if not delete_pause_token(current_user.id):
+            abort(500)
+        #controllo che generateqrcode non generi errori
+        if not create_qr_code(): abort(500)
+        
+        #sending mesage to client to refresh qrcode
+        socketio.emit('session_created')
+        return jsonify(message='codice valido')
+    return jsonify(message='codice non valido')
+
+@app.route('/delete_session',methods=['DELETE'])
+@login_required
+def delete_session():
+    user_qr_code=request.args.get('qr_code')
+    if not user_qr_code: abort(400)
+
+    if(validate_qr_code(user_qr_code) or True):
+        #upload del token se non va a buon fine la insert triggeriamo errore
+        if not delete_session_token(current_user.id):
+            abort(500)
+        #controllo che generateqrcode non generi errori
+        if not create_qr_code(): abort(500)
+        
+        #sending mesage to client to refresh qrcode
+        socketio.emit('session_created')
+        return jsonify(message='codice valido')
+    return jsonify(message='codice non valido')
+
 
 if __name__=='__main__':
     socketio.run(app)
