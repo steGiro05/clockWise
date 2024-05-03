@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, Text, Button } from 'react-native'
+import { View, Text, ActivityIndicator } from 'react-native'
 
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text} >Welcome to the Splash Screen!</Text>
+      <Text style={styles.text} >Loading...</Text>
+      <ActivityIndicator size="large" color="#0000ff" />
     </View>
   )
 }

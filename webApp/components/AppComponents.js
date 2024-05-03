@@ -1,4 +1,5 @@
 import React from 'react'
+import { View, Text, Button } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './Home'
@@ -6,15 +7,36 @@ import Scanner from './Scanner'
 
 const Stack = createNativeStackNavigator();
 
-const Components = () => {
+// const AppComponents = () => {
+//     return (
+//         <NavigationContainer>
+//             <Stack.Navigator screenOptions={{ headerShown : false}}>
+//                 <Stack.Screen name="Main" component={Home} />
+//                 <Stack.Screen name="Scanner" component={Scanner} />
+//             </Stack.Navigator>
+//         </NavigationContainer>
+//     );
+// }
+
+const AppComponents = ({ logout }) => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown : false}}>
-                <Stack.Screen name="Main" component={Home} />
-                <Stack.Screen name="Scanner" component={Scanner} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <View style={styles.container}>
+            <Text style={styles.text}>App Components</Text>
+            <Button title="Click me" onPress={logout} />
+        </View>
     );
 }
 
-export default Components
+const styles = {
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+}
+
+export default AppComponents
