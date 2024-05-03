@@ -1,5 +1,9 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
+import AppComponents from "./components/AppComponents";
+import AuthComponents from "./components/AuthComponents";
+
+const 
 
 const App = () => {
   return (
@@ -10,4 +14,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default App; 
