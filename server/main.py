@@ -57,7 +57,7 @@ def get_qr_code():
 @app.route('/get_user')
 def get_user():
     if current_user.is_authenticated:
-        return jsonify({'user_id': str(current_user.username)}), 200
+        return jsonify({'username': str(current_user.username)}), 200
     else:
         return jsonify({'message': 'Not logged in'}), 401
 
