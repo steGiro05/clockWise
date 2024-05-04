@@ -47,7 +47,7 @@ def verify_password(username, password):
 def qr_page():
     return render_template('main.html')
 
-@app.route('/get_qr_code')
+@app.route('/get_qrcode')
 @auth.login_required
 def get_qr_code():
     return send_file('qr/qr.png',mimetype='image/png')
@@ -90,7 +90,7 @@ def login():
         return jsonify({'message': 'Method not allowed'}), 405
     
 
-@app.route('/logout')
+@app.route('/logout',methods=['POST'])
 def logout():
     logout_user()
     return jsonify({'message': 'Success'}), 200

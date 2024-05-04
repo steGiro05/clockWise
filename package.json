@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "expo-barcode-scanner": "^12.9.3"
+  }
+}

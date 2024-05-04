@@ -1,9 +1,9 @@
-import React from 'react'
-import { View, Text, Button } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './Home'
-import Scanner from './Scanner'
+import React from "react";
+import { View, Text, Button } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "./Home";
+import Scanner from "./Scanner";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,24 +19,24 @@ const Stack = createNativeStackNavigator();
 // }
 
 const AppComponents = ({ logout }) => {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}>App Components</Text>
-            <Button title="Click me" onPress={logout} />
-        </View>
-    );
-}
+  return (
+    <>
+      <Text style={styles.text}>App Components</Text>
+      <Button title="Click me" onPress={logout} />
+    </>
+  );
+};
 
 const styles = {
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-}
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+};
 
-export default AppComponents
+export default AppComponents;
