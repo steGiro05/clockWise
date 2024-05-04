@@ -44,13 +44,13 @@ def post_qr_code(new_qr_code):
 def get_user_byid(uid):
     db=sq.connect('data.db')
     cursor=db.cursor()
-    cursor.execute("SELECT id, username FROM users where id = ?",[uid])
+    cursor.execute("SELECT id, first_name, last_name, birthday, username FROM users where id = ?",[uid])
     data=cursor.fetchone()
     db.close()
     
     if data is None:
         return None
-    return User(data[0],data[1])
+    return User(data[0],data[1],data[2],data[3],data[4])
 
 def sign_in(username,password):
     db=sq.connect('data.db')

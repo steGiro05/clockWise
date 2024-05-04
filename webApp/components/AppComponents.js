@@ -1,30 +1,50 @@
-import React from 'react'
-import { View, Text, Button } from 'react-native'
+import * as React from 'react';
+import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './Home'
-import Scanner from './Scanner'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Stack = createNativeStackNavigator();
-
-// const AppComponents = () => {
-//     return (
-//         <NavigationContainer>
-//             <Stack.Navigator screenOptions={{ headerShown : false}}>
-//                 <Stack.Screen name="Main" component={Home} />
-//                 <Stack.Screen name="Scanner" component={Scanner} />
-//             </Stack.Navigator>
-//         </NavigationContainer>
-//     );
-// }
-
-const AppComponents = ({ logout }) => {
+const HeaderComponent = ({ name, surname }) => {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>App Components</Text>
-            <Button title="Click me" onPress={logout} />
+        <View style={{ height: 60, backgroundColor: '#007bff', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+            {/* Parametri name e surname a sinistra */}
+            <View style={{ flex: 1 }}>
+                <Text style={{ color: '#fff', fontSize: 16 }}>{name} {surname}</Text>
+            </View>
+            {/* Icona di campanello per le notifiche a destra */}
+            {/* <TouchableOpacity onPress={() => console.log('Notifiche')}>
+                <Ionicons name="ios-notifications-outline" size={24} color="#fff" />
+            </TouchableOpacity> */}
         </View>
     );
+}
+
+function HomeScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Home!</Text>
+    </View>
+  );
+}
+
+function SettingsScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Settings!</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+const AppComponents = ({ name, surname }) => {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={{ header: () => <HeaderComponent name={name} surname={surname} /> }}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }
 
 const styles = {
@@ -39,4 +59,4 @@ const styles = {
     },
 }
 
-export default AppComponents
+export default AppComponents;

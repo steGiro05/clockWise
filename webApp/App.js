@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button,  } from "react-native"; // Importato ActivityIndicator per mostrare un indicatore di caricamento
+import { View, Text, Button  } from "react-native"; // Importato ActivityIndicator per mostrare un indicatore di caricamento
 import AppComponents from "./components/AppComponents";
 import AuthComponents from "./components/AuthComponents";
 import SplashScreen from "./components/SplashScreen";
 
+const HeaderComponent = ({ name, surname }) => {
+  return (
+    <View style={{ height: 60, backgroundColor: '#007bff', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+      {/* Parametri name e surname a sinistra */}
+      <View style={{ flex: 1 }}>
+        <Text style={{ color: '#fff', fontSize: 16 }}>{name} {surname}</Text>
+      </View>
+      {/* Icona di campanello per le notifiche a destra */}
+      {/* <TouchableOpacity onPress={() => console.log('Notifiche')}>
+        <Ionicons name="ios-notifications-outline" size={24} color="#fff" />
+      </TouchableOpacity> */}
+    </View>
+  );
+}
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +47,7 @@ const App = () => {
       .then((json) => {
         console.log(json);
         setIsLoggedIn(true);
-        setUsername(json.username); // Imposta il nome utente
+        setUser(json); // Imposta il nome utente
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -57,7 +72,7 @@ const App = () => {
         console.log(json);
         if (json.username) {
           setIsLoggedIn(true);
-          setUsername(json.username);
+          setUser(json);
         } else {
           setIsLoggedIn(false);
         }
@@ -100,7 +115,10 @@ const App = () => {
         <SplashScreen />
       ) : (
         isLoggedIn ? (
-          <AppComponents logout={logout} />
+          <>
+            {/* <HeaderComponent name={"Nabil"} surname={"Touri"} /> */}
+            <AppComponents name={user.first_name} surname={user.last_name} />
+          </>
         ) : (
           <AuthComponents login={login} />
         )
