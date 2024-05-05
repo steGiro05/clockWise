@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button,  } from "react-native"; // Importato ActivityIndicator per mostrare un indicatore di caricamento
 import AppComponents from "./components/AppComponents";
 import AuthComponents from "./components/AuthComponents";
 import SplashScreen from "./components/SplashScreen";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +16,7 @@ const App = () => {
   const login = async () => {
     setIsLoading(true)
     console.log('login');
-    await fetch('http://localhost:5000/login', {
+    await fetch('http://192.168.1.40:5000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +31,7 @@ const App = () => {
       .then((json) => {
         console.log(json);
         setIsLoggedIn(true);
-        setUsername(json.username); // Imposta il nome utente
+        setUser(json); // Imposta il nome utente
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -45,7 +44,7 @@ const App = () => {
   const getUser = async () => {
     setIsLoading(true)
     console.log('get_user');
-    await fetch('http://localhost:5000/get_user', {
+    await fetch('http://192.168.1.40:5000/get_user', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -57,7 +56,7 @@ const App = () => {
         console.log(json);
         if (json.username) {
           setIsLoggedIn(true);
-          setUsername(json.username);
+          setUser(json);
         } else {
           setIsLoggedIn(false);
         }
@@ -73,7 +72,7 @@ const App = () => {
   const logout = async () => {
     setIsLoading(true);
     console.log('logout');
-    await fetch('http://localhost:5000/logout', {
+    await fetch('http://192.168.1.40:5000/logout', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -99,8 +98,8 @@ const App = () => {
       {isLoading ? ( // Se isLoading è true, visualizza un indicatore di caricamento
         <SplashScreen />
       ) : (
-        isLoggedIn ? (
-          <AppComponents logout={logout} />
+        isLoggedIn ? (  
+          <AppComponents user={user} /> 
         ) : (
           <AuthComponents login={login} />
         )

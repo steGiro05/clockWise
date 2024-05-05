@@ -1,30 +1,49 @@
-import React from 'react'
-import { View, Text, Button } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './Home'
-import Scanner from './Scanner'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HeaderComponent from './HeaderComponent';
+import HomeScreen from './HomeScreen';
+import ProfileScreen from './ProfileScreen';
+import Scanner from './Scanner';
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-// const AppComponents = () => {
-//     return (
-//         <NavigationContainer>
-//             <Stack.Navigator screenOptions={{ headerShown : false}}>
-//                 <Stack.Screen name="Main" component={Home} />
-//                 <Stack.Screen name="Scanner" component={Scanner} />
-//             </Stack.Navigator>
-//         </NavigationContainer>
-//     );
-// }
+const AppComponents = ({ user }) => {
+  const [activityState, setActivityState] = useState(null);
 
-const AppComponents = ({ logout }) => {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}>App Components</Text>
-            <Button title="Click me" onPress={logout} />
-        </View>
-    );
+  useEffect(() => {
+    fetchActivityState();
+  }, []);
+
+  const fetchActivityState = async () => {
+    try {
+      const response = await fetch('http://192.168.1.40:5000/get_state', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Includi eventuali header aggiuntivi richiesti dal backend
+        },
+        credentials: 'include',
+      });
+      const data = await response.json();
+      // Imposta lo stato di attività
+      setActivityState(data);
+    } catch (error) {
+      console.error('Errore nel fetch dello stato di attività:', error);
+      // Gestisci l'errore in base alle tue esigenze
+    }
+  };
+
+  return (
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={{ header: () => <HeaderComponent user={user} /> }}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Scanner" component={Scanner} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }
 
 const styles = {
@@ -39,4 +58,4 @@ const styles = {
     },
 }
 
-export default AppComponents
+export default AppComponents;
