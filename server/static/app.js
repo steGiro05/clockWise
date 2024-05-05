@@ -11,7 +11,7 @@ socket.on("session_created", () => {
 });
 // Codice JavaScript per caricare l'immagine dalla tua API Flask
 const fetch_qr = () => {
-  fetch("/get_qr_code")
+  fetch("/get_qrcode")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");

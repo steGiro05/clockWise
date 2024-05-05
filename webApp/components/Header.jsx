@@ -1,7 +1,23 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const HeaderComponent = ({ user }) => {
+const HeaderComponent = ({ user, status }) => {
+  let statusColor;
+  switch (status) {
+    case 0:
+      statusColor = "red";
+      break;
+    case 1:
+      statusColor = "lightgreen"; // Verde più acceso per stato 1
+      break;
+    case 2:
+      statusColor = "yellow"; // Colore giallo per stato 2
+      break;
+    default:
+      statusColor = "transparent"; // Colore di default o trasparente per altri stati
+      break;
+  }
+
   return (
     <View style={styles.container}>
       {/* Testo di benvenuto */}
@@ -12,6 +28,11 @@ const HeaderComponent = ({ user }) => {
           {user.first_name} {user.last_name}
         </Text>
       </View>
+
+      {/* Stato */}
+      <View
+        style={[styles.statusIndicator, { backgroundColor: statusColor }]}
+      />
     </View>
   );
 };
@@ -40,6 +61,12 @@ const styles = {
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  statusIndicator: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginLeft: 10,
   },
 };
 

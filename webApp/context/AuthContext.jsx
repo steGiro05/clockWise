@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       })
       .then((json) => {
         setUser(json.user);
-        return { message: "Loggin in", status: 401 };
+        return { message: "Loggin in", status: 200 };
       })
       .catch((error) => {
         // Se la risposta non è "ok", questa sezione verrà eseguita

@@ -4,13 +4,16 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginPage from "./pages/LoginPage";
 import PagesHandler from "./pages/PagesHandler";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { SessionProvider } from "./context/SessionContext";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <AuthProvider>
-      <Layout></Layout>
+      <SessionProvider>
+        <Layout></Layout>
+      </SessionProvider>
     </AuthProvider>
   );
 }
