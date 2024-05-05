@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native"; // Importato ActivityIndicator per mostrare un indicatore di caricamento
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = ({ navigation }) => {
-  const url = "http://192.168.178.23:5000";
+  const { onLogin } = useAuth();
 
   const [credentials, setCredentials] = useState({
     username: "",
@@ -18,12 +18,6 @@ const LoginPage = ({ navigation }) => {
   });
   const [loginError, setLoginError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [fireUserControl, setFireUserControl] = useState(false);
-
-  useEffect(() => {
-    console.log("useffect");
-    /* getUser(); */
-  }, [fireUserControl]);
 
   const login = async () => {
     setIsLoading(true);
@@ -48,82 +42,12 @@ const LoginPage = ({ navigation }) => {
       return;
     }
 
-    // Se entrambi i controlli passano, procedi con il login
-    await fetch(`${url}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: credentials.username,
-        password: credentials.password,
-      }),
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          setLoginError("Invalid Credentials");
-          // Esci dalla catena di promesse
-          throw new Error("Invalid response");
-        }
-        return response.json();
-      })
-      .then(() => {
-        setFireUserControl((prev) => !prev);
-        setLoginError(null);
-      })
-      .catch((error) => {
-        // Se la risposta non è "ok", questa sezione verrà eseguita
-        console.log("Error:", error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Imposta isLoading a false una volta completato il login
-        // Qui non viene chiamato setLoginError(null) se la risposta non è "ok"
-      });
-  };
+    const result = await onLogin(credentials.username, credentials.password);
+    if (result.status != 200) {
+      setLoginError(result.message);
+    }
 
-  const getUser = async () => {
-    await fetch(`${url}/get_user`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Invalid response");
-        }
-        return response.json();
-      })
-      .then((json) => {
-        /* console.log(json); */
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  };
-
-  const logout = async () => {
-    setIsLoading(true);
-    console.log("logout");
-    await fetch(`${url}/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Imposta isLoading a false una volta completato il logout
-      });
+    setIsLoading(false);
   };
 
   return (

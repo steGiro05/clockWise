@@ -57,7 +57,13 @@ def get_qr_code():
 @app.route('/get_user')
 def get_user():
     if current_user.is_authenticated:
-        return jsonify({'username': str(current_user.username)}), 200
+        return jsonify({
+            'user_id': str(current_user.id),
+            'first_name': current_user.first_name,
+            'last_name': current_user.last_name,
+            'birthday': current_user.birthday,
+            'username': current_user.username
+        }), 200
     else:
         return jsonify({'message': 'Not logged in'}), 401
 
@@ -78,7 +84,7 @@ def login():
             if user is not None:
                 # Restituisci un messaggio di successo
                 login_user(user)
-                return jsonify({'message': 'Login successful'}), 200
+                return jsonify({'user': user.to_dict(), 'message':'Successfully logged in'}), 200
             else:
                 # Restituisci un messaggio di errore se l'utente non esiste o la password è errata
                 return jsonify({'message': 'Invalid username or password'}), 401
