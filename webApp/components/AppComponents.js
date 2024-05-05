@@ -36,7 +36,7 @@ const AppComponents = ({ user }) => {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ header: () => <HeaderComponent name={user.first_name} surname={user.last_name} /> }}>
+      <Tab.Navigator screenOptions={{ header: () => <HeaderComponent user={user} /> }}>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Scanner" component={Scanner} />
         <Tab.Screen name="Profile" component={ProfileScreen} />

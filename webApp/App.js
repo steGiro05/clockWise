@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button  } from "react-native"; // Importato ActivityIndicator per mostrare un indicatore di caricamento
 import AppComponents from "./components/AppComponents";
 import AuthComponents from "./components/AuthComponents";
 import SplashScreen from "./components/SplashScreen";
-
-const HeaderComponent = ({ name, surname }) => {
-  return (
-    <View style={{ height: 60, backgroundColor: '#007bff', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
-      {/* Parametri name e surname a sinistra */}
-      <View style={{ flex: 1 }}>
-        <Text style={{ color: '#fff', fontSize: 16 }}>{name} {surname}</Text>
-      </View>
-      {/* Icona di campanello per le notifiche a destra */}
-      {/* <TouchableOpacity onPress={() => console.log('Notifiche')}>
-        <Ionicons name="ios-notifications-outline" size={24} color="#fff" />
-      </TouchableOpacity> */}
-    </View>
-  );
-}
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,7 +16,7 @@ const App = () => {
   const login = async () => {
     setIsLoading(true)
     console.log('login');
-    await fetch('http://localhost:5000/login', {
+    await fetch('http://192.168.1.71:5000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,7 +44,7 @@ const App = () => {
   const getUser = async () => {
     setIsLoading(true)
     console.log('get_user');
-    await fetch('http://localhost:5000/get_user', {
+    await fetch('http://192.168.1.71:5000/get_user', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -88,7 +72,7 @@ const App = () => {
   const logout = async () => {
     setIsLoading(true);
     console.log('logout');
-    await fetch('http://localhost:5000/logout', {
+    await fetch('http://192.168.1.71:5000/logout', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

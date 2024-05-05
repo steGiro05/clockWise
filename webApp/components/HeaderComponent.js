@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const HeaderComponent = ({ name, surname }) => {
+const HeaderComponent = ({ user }) => {
     return (
         <View style={styles.container}>
             {/* Testo di benvenuto */}
@@ -10,7 +10,7 @@ const HeaderComponent = ({ name, surname }) => {
             
             
             
-                <Text style={styles.text}>{name} {surname}</Text>
+                <Text style={styles.text}>{user.first_name} {user.last_name}</Text>
             </View>
         </View>
     );
