@@ -112,7 +112,7 @@ def get_state():
     if state == 'p':
         message = 'User in pause'
         code=2
-    elif state == 'a':
+    elif state == 'a':  
         message = 'User is active'
         code=1
     else:

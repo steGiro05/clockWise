@@ -55,15 +55,15 @@ def get_user_byid(uid):
 def sign_in(username,password):
     db=sq.connect('data.db')
     cursor=db.cursor()
-    cursor.execute("SELECT id, username, hash FROM users where username = ? ",[username])
+    cursor.execute("SELECT id, first_name, last_name, birthday, username, hash FROM users where username = ?", [username])
     data=cursor.fetchone()
     db.close()
     
     if data is None:
         return None
-    if not check_password_hash(data[2],password):
+    if not check_password_hash(data[5],password):
         return None
-    return User(data[0],data[1])
+    return User(data[0], data[1], data[2], data[3], data[4])
     
 #tables activeSessionTokens, activePauseTokens and deletedPauseTokens
 def get_user_state(current_user_id):

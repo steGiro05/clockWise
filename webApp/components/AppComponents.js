@@ -1,47 +1,45 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-const HeaderComponent = ({ name, surname }) => {
-    return (
-        <View style={{ height: 60, backgroundColor: '#007bff', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
-            {/* Parametri name e surname a sinistra */}
-            <View style={{ flex: 1 }}>
-                <Text style={{ color: '#fff', fontSize: 16 }}>{name} {surname}</Text>
-            </View>
-            {/* Icona di campanello per le notifiche a destra */}
-            {/* <TouchableOpacity onPress={() => console.log('Notifiche')}>
-                <Ionicons name="ios-notifications-outline" size={24} color="#fff" />
-            </TouchableOpacity> */}
-        </View>
-    );
-}
-
-function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Settings!</Text>
-    </View>
-  );
-}
+import HeaderComponent from './HeaderComponent';
+import HomeScreen from './HomeScreen';
+import ProfileScreen from './ProfileScreen';
+import Scanner from './Scanner';
 
 const Tab = createBottomTabNavigator();
 
-const AppComponents = ({ name, surname }) => {
+const AppComponents = ({ user }) => {
+  const [activityState, setActivityState] = useState(null);
+
+  useEffect(() => {
+    fetchActivityState();
+  }, []);
+
+  const fetchActivityState = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/get_state', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Includi eventuali header aggiuntivi richiesti dal backend
+        },
+      });
+      const data = await response.json();
+      // Imposta lo stato di attività
+      setActivityState(data);
+    } catch (error) {
+      console.error('Errore nel fetch dello stato di attività:', error);
+      // Gestisci l'errore in base alle tue esigenze
+    }
+  };
+
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{ header: () => <HeaderComponent name={name} surname={surname} /> }}>
+      <Tab.Navigator screenOptions={{ header: () => <HeaderComponent name={user.first_name} surname={user.last_name} /> }}>
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Scanner" component={Scanner} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -2,14 +2,10 @@ import React from "react";
 import { View, Text, Button } from "react-native";
 
 
-const Home = ({ navigation }) => {
+const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text} >Welcome to the Home page!</Text>
-      <Button
-        title="Go to Scanner"
-        onPress={() => navigation.navigate("Scanner")}
-      />
     </View>
   );
 };
@@ -25,4 +21,4 @@ const styles = {
     fontWeight: "bold",
   },
 }
-export default Home;
+export default HomeScreen;

@@ -114,11 +114,8 @@ const App = () => {
       {isLoading ? ( // Se isLoading è true, visualizza un indicatore di caricamento
         <SplashScreen />
       ) : (
-        isLoggedIn ? (
-          <>
-            {/* <HeaderComponent name={"Nabil"} surname={"Touri"} /> */}
-            <AppComponents name={user.first_name} surname={user.last_name} />
-          </>
+        isLoggedIn ? (  
+          <AppComponents user={user} /> 
         ) : (
           <AuthComponents login={login} />
         )

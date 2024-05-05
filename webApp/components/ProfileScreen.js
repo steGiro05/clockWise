@@ -1,12 +1,12 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React from "react";
+import { Text, View } from "react-native";
 
-const Scanner = () => {
+const ProfileScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text} >Welcome to the Scanner page!</Text>
+        <Text style={styles.text}>Welcome to the Profile page!</Text>
         </View>
-    )
+    );
 }
 
 const styles = {
@@ -21,4 +21,4 @@ const styles = {
     },
 }
 
-export default Scanner
+export default ProfileScreen;
