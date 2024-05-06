@@ -3,12 +3,11 @@ import { StyleSheet, View, Text, Button } from "react-native";
 import { Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 
-const Scanner = () => {
+const Scanner = ({ onScan }) => {
   const isFocused = useIsFocused();
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [text, setText] = useState("Not yet scanned");
 
   const askForCameraPermission = () => {
     (async () => {
@@ -21,10 +20,9 @@ const Scanner = () => {
     askForCameraPermission();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
-    setText(data);
-    console.log("Type: " + type + "\nData: " + data);
+    onScan(data);
   };
 
   if (hasPermission === null) {
@@ -57,8 +55,6 @@ const Scanner = () => {
           />
         )}
       </View>
-      <Text style={styles.maintext}>{text}</Text>
-
       {scanned && (
         <Button
           title={"Scan again?"}

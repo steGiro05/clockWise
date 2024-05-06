@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
-const url = "http://192.168.178.23:5000";
+const url = "http://192.168.85.139:5000";
 
 export const useAuth = () => {
   return useContext(AuthContext);

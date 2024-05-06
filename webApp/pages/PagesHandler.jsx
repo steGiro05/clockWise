@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign } from "@expo/vector-icons"; // Importa le icone da Expo
 import ProfilePage from "./ProfilePage";
 import DashboardPage from "./DashboardPage";
-import QrScanner from "./QrScanner";
+import ScannerPage from "./ScannerPage";
 import HeaderComponent from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import { useSession } from "../context/SessionContext";
@@ -45,7 +45,7 @@ const PagesHandler = () => {
         })}
       >
         <Tab.Screen name="Home" component={DashboardPage} />
-        <Tab.Screen name="Scanner" component={QrScanner} />
+        <Tab.Screen name="Scanner" component={ScannerPage} />
         <Tab.Screen name="Profile" component={ProfilePage} />
       </Tab.Navigator>
     </NavigationContainer>

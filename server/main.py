@@ -135,8 +135,8 @@ def create_session_token():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
     
     
 
@@ -155,8 +155,8 @@ def create_pause():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
 
 @app.route('/delete_pause',methods=['DELETE'])
 @login_required
@@ -173,8 +173,8 @@ def delete_pause():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
 
 @app.route('/delete_session',methods=['DELETE'])
 @login_required
@@ -191,8 +191,8 @@ def delete_session():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
 
 
 if __name__=='__main__':
