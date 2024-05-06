@@ -36,11 +36,7 @@ export const SessionProvider = ({ children }) => {
     get_session();
   }, []);
 
-  const value = {
-    session,
-  };
-
-  const create_session = async (qrcode) => {
+  const createSession = async (qrcode) => {
     return await fetch(`${url}/create_session_token?qr_code=${qrcode}`, {
       method: "POST",
       headers: {
@@ -64,6 +60,10 @@ export const SessionProvider = ({ children }) => {
         console.log("Error:", error);
         return { message: "Invalid Code", status: 401 };
       });
+  };
+  const value = {
+    session,
+    onCreateSession: createSession,
   };
 
   return (
