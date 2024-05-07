@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ImageBackground } from "react-native";
 
 const HeaderComponent = ({ user, status }) => {
   let statusColor;
@@ -19,42 +19,52 @@ const HeaderComponent = ({ user, status }) => {
   }
 
   return (
-    <View style={styles.container}>
-      {/* Testo di benvenuto */}
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>Benvenuto,</Text>
+    <ImageBackground
+      source={require("../assets/background.png")} // Imposta l'immagine di sfondo
+      style={styles.container}
+    >
+      <View style={styles.overlay}>
+        {/* Testo di benvenuto */}
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcomeText}>Welcome,</Text>
 
-        <Text style={styles.text}>
-          {user.first_name} {user.last_name}
-        </Text>
+          <Text style={styles.text}>
+            {user.first_name} {user.last_name}
+          </Text>
+        </View>
+
+        {/* Stato */}
+        <View
+          style={[styles.statusIndicator, { backgroundColor: statusColor }]}
+        />
       </View>
-
-      {/* Stato */}
-      <View
-        style={[styles.statusIndicator, { backgroundColor: statusColor }]}
-      />
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = {
   container: {
-    height: 100,
-    backgroundColor: "#007bff",
-    flexDirection: "row",
-    alignItems: "center",
+    height: 120, // Altezza aumentata
     paddingHorizontal: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 20, // Angoli inferiori arrotondati
+    borderBottomRightRadius: 20, // Angoli inferiori arrotondati
+    paddingBottom: 10, // Padding inferiore aggiunto
+  },
+  overlay: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between", // Distribuisce gli elementi all'estremità dei contenitori flessibili
+    alignItems: "center", // Allinea gli elementi verticalmente
+    marginTop: 30,
   },
   welcomeContainer: {
-    flex: 1,
-    marginTop: 30,
+    flexDirection: "row", // Permette di allineare il testo di benvenuto e il nome utente su una riga
   },
   welcomeText: {
     color: "#fff",
     fontSize: 14,
     marginTop: 2,
+    marginRight: 10, // Aggiunge un margine tra il testo di benvenuto e il nome utente
   },
   title: {},
   text: {
@@ -66,7 +76,6 @@ const styles = {
     width: 10,
     height: 10,
     borderRadius: 5,
-    marginLeft: 10,
   },
 };
 

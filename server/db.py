@@ -58,6 +58,7 @@ def sign_in(username,password):
     cursor.execute("SELECT id, username,first_name, last_name, birthday, hash FROM users where username = ? ",[username])
     data=cursor.fetchone()
     db.close()
+
     
     if data is None:
         return None

@@ -6,10 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-} from "react-native"; // Importato ActivityIndicator per mostrare un indicatore di caricamento
+  ImageBackground,
+} from "react-native";
 import { useAuth } from "../context/AuthContext";
 
-const LoginPage = ({ navigation }) => {
+const LoginPage = ({}) => {
   const { onLogin } = useAuth();
 
   const [credentials, setCredentials] = useState({
@@ -22,27 +23,31 @@ const LoginPage = ({ navigation }) => {
   const login = async () => {
     setIsLoading(true);
 
+    // Rimuovi eventuali spazi bianchi dalla fine delle stringhe
+    const trimmedUsername = credentials.username.trim();
+    const trimmedPassword = credentials.password.trim();
+
     // Controllo se sono stati inseriti entrambi i parametri
-    if (!credentials.username || !credentials.password) {
-      if (!credentials.username && !credentials.password) {
+    if (!trimmedUsername || !trimmedPassword) {
+      if (!trimmedUsername && !trimmedPassword) {
         setLoginError("No username or password provided");
-      } else if (!credentials.username) {
+      } else if (!trimmedUsername) {
         setLoginError("No username provided");
       } else {
         setLoginError("No password provided");
       }
-      setIsLoading(false); // Non dimenticare di impostare isLoading su false
+      setIsLoading(false);
       return;
     }
 
     // Controllo se lo username ha almeno 5 caratteri
-    if (credentials.username.length < 5) {
+    if (trimmedUsername.length < 5) {
       setLoginError("Username must be at least 5 characters long");
-      setIsLoading(false); // Non dimenticare di impostare isLoading su false
+      setIsLoading(false);
       return;
     }
 
-    const result = await onLogin(credentials.username, credentials.password);
+    const result = await onLogin(trimmedUsername, trimmedPassword);
     if (result.status != 200) {
       setLoginError(result.message);
     }
@@ -51,9 +56,12 @@ const LoginPage = ({ navigation }) => {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <Text style={styles.title}> Login</Text>
+    <ImageBackground
+      source={require("../assets/background.png")}
+      style={styles.container}
+    >
+      <View style={styles.overlay}>
+        <Text style={styles.title}> LogIn</Text>
         <View style={styles.inputView}>
           <TextInput
             onChangeText={(text) => {
@@ -90,7 +98,7 @@ const LoginPage = ({ navigation }) => {
         </TouchableOpacity>
         {loginError && <Text style={styles.errorText}>{loginError}</Text>}
       </View>
-    </>
+    </ImageBackground>
   );
 };
 
@@ -101,12 +109,14 @@ const styles = {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#3AB4BA",
   },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
+  overlay: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomLeftRadius: 20, // Angoli inferiori arrotondati
+    borderBottomRightRadius: 20, // Angoli inferiori arrotondati
   },
   title: {
     fontWeight: "bold",
@@ -130,9 +140,9 @@ const styles = {
     color: "#3AB4BA",
   },
   loginBtn: {
-    width: "80%",
-    backgroundColor: "#3AB4BA", // Cambia il colore del bottone di login a blu
-    borderRadius: 10,
+    width: "50%",
+    backgroundColor: "#85C2FF", // Cambia il colore di sfondo del bottone
+    borderRadius: 20,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -141,5 +151,9 @@ const styles = {
   loginText: {
     color: "white",
     fontWeight: "bold",
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
   },
 };

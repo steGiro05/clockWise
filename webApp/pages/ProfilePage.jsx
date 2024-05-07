@@ -1,14 +1,20 @@
-import { Text, View } from "react-native";
-import React, { Component } from "react";
+import { View, Text, Button } from "react-native";
+import React from "react";
+import { useAuth } from "../context/AuthContext";
 
-export class ProfilePage extends Component {
-  render() {
-    return (
-      <View>
-        <Text>ProfilePage</Text>
-      </View>
-    );
-  }
-}
+const ProfilePage = () => {
+  const { onLogout } = useAuth();
+
+  const logout = () => {
+    onLogout();
+  };
+
+  return (
+    <View>
+      <Text>ProfilePage</Text>
+      <Button title="logout" onPress={logout} />
+    </View>
+  );
+};
 
 export default ProfilePage;
