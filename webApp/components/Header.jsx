@@ -28,7 +28,7 @@ const HeaderComponent = ({ user, status }) => {
         <View style={styles.content}>
           {/* Testo di benvenuto */}
           <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>Benvenuto,</Text>
+            <Text style={styles.welcomeText}>Welcome,</Text>
 
             <Text style={styles.text}>
               {user.first_name} {user.last_name}

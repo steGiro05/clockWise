@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10, // Aggiungi spazio tra i bottoni
-    backgroundColor: "#4CAF50", // Colore base del bottone (verde)
   },
   buttonText: {
     color: "#FFFFFF",
