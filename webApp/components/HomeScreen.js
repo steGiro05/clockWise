@@ -9,6 +9,7 @@ const getDayName = (date) => {
 
 const HomeScreen = () => {
   const [days, setDays] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
 
   useEffect(() => {
     // Get today's date
@@ -27,32 +28,65 @@ const HomeScreen = () => {
     setDays(daysArray);
   }, []);
 
+  useEffect(() => {
+    if (selectedDay) {
+      console.log(selectedDay.toISOString().split('T')[0]);
+      const records = fetch('https://expert-waffle-gvw7wq7r94p3v4v5-5000.app.github.dev/get_records', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+  }, [selectedDay]);
+
   const handleClick = (date) => {
     const dayName = getDayName(date);
-    console.log("Selected Date:", date, "Day Name:", dayName);
+    setSelectedDay(date);
   };
 
   return (
-    <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer} showsHorizontalScrollIndicator={false} style={styles.scroll}>
-      {days.map((date, index) => (
-        <TouchableOpacity key={index} style={styles.dayContainer} onPress={() => handleClick(date)}>
-          <View>
-            <Text style={styles.dayName}>{getDayName(date)}</Text>
-            <Text style={styles.dayNumber}>{date.getDate()}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView horizontal={true} contentContainerStyle={styles.scrollContainer} showsHorizontalScrollIndicator={false} style={styles.scroll}>
+        {days.map((date, index) => (
+          <TouchableOpacity key={index} style={styles.dayContainer} onPress={() => handleClick(date)}>
+            <View>
+              <Text style={styles.dayName}>{getDayName(date)}</Text>
+              <Text style={styles.dayNumber}>{date.getDate()}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <View style={styles.selectedDayContainer}>
+        {selectedDay && (
+          <Text style={styles.selectedDayText}>
+            {selectedDay.toISOString().split('T')[0]}
+          </Text>
+        )}
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
   },
   scroll: {
     transform: [{ scaleX: -1 }],
+    backgroundColor: '#f0f0f0',
   },
   dayContainer: {
     width: 80,
@@ -69,6 +103,15 @@ const styles = StyleSheet.create({
   },
   dayNumber: {
     fontSize: 20,
+    fontWeight: 'bold',
+  },
+  selectedDayContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedDayText: {
+    fontSize: 24,
     fontWeight: 'bold',
   },
 });

@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, records
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -94,8 +94,15 @@ def login():
 def logout():
     logout_user()
     return jsonify({'message': 'Success'}), 200
+
+
+@app.route('/get_records')
+@login_required
+def get_records():
+    data = records(current_user.id, '2024-04-27')
+    return jsonify({'message': data}), 200
     
-    
+
 #gestione pause e entrate
 @app.route('/get_state')
 @login_required

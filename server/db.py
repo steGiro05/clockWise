@@ -250,3 +250,20 @@ def get_admin():
     
     if (len(data)!=1):return None
     return data[0]
+
+def records(current_user_id, day):
+    db = sq.connect('data.db')
+    cursor = db.cursor()
+    cursor.execute('SELECT entry_time, exit_time FROM records WHERE fkUser = ? AND day = ?', [current_user_id, day])
+    data = []
+
+    for row in cursor:
+        data.append({
+            'entry_time': row[0],
+            'exit_time': row[1]
+        })
+    db.close()
+
+    if len(data) == 0:
+        return None
+    return data
