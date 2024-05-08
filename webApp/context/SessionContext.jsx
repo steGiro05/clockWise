@@ -34,7 +34,7 @@ export const SessionProvider = ({ children }) => {
     };
 
     get_session();
-  }, []);
+  }, [session]);
 
   const createSession = async (qrcode) => {
     return await fetch(`${url}/create_session_token?qr_code=${qrcode}`, {
@@ -53,7 +53,7 @@ export const SessionProvider = ({ children }) => {
       })
       .then((json) => {
         setSession(1);
-        return { message: "Session activated", status: 200 };
+        return { message: "Session uploaded", status: 200 };
       })
       .catch((error) => {
         // Se la risposta non è "ok", questa sezione verrà eseguita
@@ -79,7 +79,7 @@ export const SessionProvider = ({ children }) => {
       })
       .then((json) => {
         setSession(0);
-        return { message: "Session activated", status: 200 };
+        return { message: "Session uploaded", status: 200 };
       })
       .catch((error) => {
         // Se la risposta non è "ok", questa sezione verrà eseguita
@@ -87,10 +87,65 @@ export const SessionProvider = ({ children }) => {
         return { message: "Invalid Code", status: 401 };
       });
   };
+
+  const createPause = async (qrcode) => {
+    return await fetch(`${url}/create_pause?qr_code=${qrcode}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // Esci dalla catena di promesse
+          throw new Error("Invalid response");
+        }
+        return response.json();
+      })
+      .then((json) => {
+        setSession(2);
+        return { message: "Session uploaded", status: 200 };
+      })
+      .catch((error) => {
+        // Se la risposta non è "ok", questa sezione verrà eseguita
+        console.log("Error:", error);
+        return { message: "Invalid Code", status: 401 };
+      });
+  };
+
+  const deletePause = async (qrcode) => {
+    return await fetch(`${url}/delete_pause?qr_code=${qrcode}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // Esci dalla catena di promesse
+          throw new Error("Invalid response");
+        }
+        return response.json();
+      })
+      .then((json) => {
+        setSession(1);
+        return { message: "Session uploaded", status: 200 };
+      })
+      .catch((error) => {
+        // Se la risposta non è "ok", questa sezione verrà eseguita
+        console.log("Error:", error);
+        return { message: "Invalid Code", status: 401 };
+      });
+  };
+
   const value = {
     session,
     onCreateSession: createSession,
     onDeleteSession: deleteSession,
+    onCreatePause: createPause,
+    onDeletePause: deletePause,
   };
 
   return (

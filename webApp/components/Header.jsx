@@ -19,54 +19,57 @@ const HeaderComponent = ({ user, status }) => {
   }
 
   return (
-    <ImageBackground
-      source={require("../assets/background.png")} // Imposta l'immagine di sfondo
-      style={styles.container}
-    >
-      <View style={styles.overlay}>
-        {/* Testo di benvenuto */}
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeText}>Welcome,</Text>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("../assets/background.png")}
+        style={styles.background}
+        resizeMode="cover" // Imposta la modalità di ridimensionamento dell'immagine
+      >
+        <View style={styles.content}>
+          {/* Testo di benvenuto */}
+          <View style={styles.welcomeContainer}>
+            <Text style={styles.welcomeText}>Benvenuto,</Text>
 
-          <Text style={styles.text}>
-            {user.first_name} {user.last_name}
-          </Text>
+            <Text style={styles.text}>
+              {user.first_name} {user.last_name}
+            </Text>
+          </View>
+
+          {/* Status Indicator */}
+          <View
+            style={[styles.statusIndicator, { backgroundColor: statusColor }]}
+          />
         </View>
-
-        {/* Stato */}
-        <View
-          style={[styles.statusIndicator, { backgroundColor: statusColor }]}
-        />
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   );
 };
 
 const styles = {
   container: {
-    height: 120, // Altezza aumentata
-    paddingHorizontal: 10,
-    borderBottomLeftRadius: 20, // Angoli inferiori arrotondati
-    borderBottomRightRadius: 20, // Angoli inferiori arrotondati
-    paddingBottom: 10, // Padding inferiore aggiunto
+    height: 100,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
-  overlay: {
+  background: {
+    flex: 1, // Imposta l'immagine a riempire completamente lo spazio
+  },
+  content: {
     flexDirection: "row",
-    width: "100%",
     justifyContent: "space-between", // Distribuisce gli elementi all'estremità dei contenitori flessibili
-    alignItems: "center", // Allinea gli elementi verticalmente
-    marginTop: 30,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    height: "100%", // Altezza del contenitore pari all'altezza del componente
   },
   welcomeContainer: {
-    flexDirection: "row", // Permette di allineare il testo di benvenuto e il nome utente su una riga
+    flex: 1,
+    marginTop: 30,
   },
   welcomeText: {
     color: "#fff",
     fontSize: 14,
     marginTop: 2,
-    marginRight: 10, // Aggiunge un margine tra il testo di benvenuto e il nome utente
   },
-  title: {},
   text: {
     color: "#fff",
     fontSize: 20,

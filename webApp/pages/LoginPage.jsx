@@ -61,7 +61,7 @@ const LoginPage = ({}) => {
       style={styles.container}
     >
       <View style={styles.overlay}>
-        <Text style={styles.title}> LogIn</Text>
+        <Text style={styles.title}> Login</Text>
         <View style={styles.inputView}>
           <TextInput
             onChangeText={(text) => {
