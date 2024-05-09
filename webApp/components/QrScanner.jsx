@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
-import { Camera } from "expo-camera";
+import { Camera } from "expo-camera/legacy";
 import { useIsFocused } from "@react-navigation/native";
 
-const Scanner = ({ onScan }) => {
+const QrScanner = ({ onScan }) => {
   const isFocused = useIsFocused();
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Scanner;
+export default QrScanner;

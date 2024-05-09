@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -193,6 +193,15 @@ def delete_session():
         socketio.emit('session_created')
         return jsonify(message='codice valido',status=200)
     return abort(401)
+
+#extract user data for analysis and stats
+@app.route('/get_user_stats',methods=['GET'])
+@login_required
+def get_user_data():
+    user_data=get_user_stats_byid(current_user.id)
+    if user_data is not None:
+        return jsonify(user_data.to_dict()),200
+    return abort(404)
 
 
 if __name__=='__main__':

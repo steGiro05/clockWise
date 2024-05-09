@@ -1,5 +1,6 @@
 import sqlite3 as sq
 from userModel import User
+from userStatsModel import UserStats
 from werkzeug.security import check_password_hash
 
 from datetime import datetime
@@ -251,3 +252,14 @@ def get_admin():
     
     if (len(data)!=1):return None
     return data[0]
+
+#view user_stats
+def get_user_stats_byid(uid):
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("SELECT * FROM user_stats WHERE idUser = ?",[uid])
+    data=cursor.fetchone()
+    db.close()
+    if data is None:
+        return None
+    return UserStats(avg_entry_time=data[1], avg_exit_time=data[2], avg_pause_duration=data[3])
