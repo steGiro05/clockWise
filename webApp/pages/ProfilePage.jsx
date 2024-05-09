@@ -12,7 +12,6 @@ import RingStatsCard from "../components/RingStatsCard";
 
 const ProfilePage = () => {
   const url = "http://192.168.178.23:5000";
-
   const { user, onLogout } = useAuth();
 
   const { username, first_name, last_name, birthday } = user;
@@ -66,7 +65,7 @@ const ProfilePage = () => {
         const result = await fetchUserStats();
         setUserStats(result);
       } catch (error) {
-        console.error("Failed to fetch user stats:", error);
+        console.log("Failed to fetch user stats:", error);
       }
     };
 

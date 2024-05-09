@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats,records
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -14,6 +14,8 @@ from flask_login import LoginManager,login_user, logout_user, current_user, logi
 from flask_socketio import SocketIO
 #utils
 from utils import create_qr_code, validate_qr_code
+#date
+from datetime import date
 
 #INITIALIZATION
 app=Flask(__name__)
@@ -64,6 +66,17 @@ def all_user_page():
 def get_all_users_stats():
     return jsonify(all_user_stats())
 
+#display all user status
+""" @app.route('/all_user_page',methods=['GET'])
+@auth.login_required
+def all_user_page():
+    return render_template('all_user_stats.html')   
+
+@app.route('/get_all_users_stats',methods=['GET'])
+@auth.login_required
+def get_all_users_stats():
+    return jsonify(all_user_stats())
+ """
 #users routes
 #users login
 @app.route('/get_user')
@@ -215,6 +228,13 @@ def get_user_data():
         return jsonify(user_data.to_dict()),200
     return abort(404)
 
+#extract data from records for dashboard
+@app.route('/get_records')
+@login_required
+def get_records():
+    today = date.today().strftime('%Y-%m-%d')
+    data = records(current_user.id, today)
+    return jsonify({'message': data}), 200
 
 if __name__=='__main__':
     socketio.run(app,host= '0.0.0.0')
