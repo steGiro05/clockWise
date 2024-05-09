@@ -3,6 +3,7 @@ import QrScanner from "../components/QrScanner";
 import { useSession } from "../context/SessionContext";
 import ActionPicker from "../components/ActionPicker";
 import { useNavigation } from "@react-navigation/native";
+import { View, Text, StyleSheet } from "react-native";
 
 export default function ScannerPage() {
   const {
@@ -13,6 +14,7 @@ export default function ScannerPage() {
     session,
   } = useSession();
   const [action, setAction] = useState();
+  const [error, setError] = useState(false);
   const navigation = useNavigation();
 
   const handleActionPick = (selectedAction) => {
@@ -34,9 +36,12 @@ export default function ScannerPage() {
     }
 
     if (result.status == 200) {
+      setError(false);
       navigation.navigate("Home");
+    } else {
+      setError(true);
+      setAction(null);
     }
-    setAction(null);
     return;
   };
 
@@ -48,6 +53,22 @@ export default function ScannerPage() {
   return action ? (
     <QrScanner onScan={onScan} />
   ) : (
-    <ActionPicker onActionPick={handleActionPick} />
+    <>
+      {error && <Text style={styles.error}>QR not valid!</Text>}
+      <ActionPicker onActionPick={handleActionPick} />
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  error: {
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 10,
+    backgroundColor: "red",
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});

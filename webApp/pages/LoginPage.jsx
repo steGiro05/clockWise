@@ -9,9 +9,11 @@ import {
   ImageBackground,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
+import { useSession } from "../context/SessionContext";
 
 const LoginPage = ({}) => {
   const { onLogin } = useAuth();
+  const { onUpdateSession } = useSession();
 
   const [credentials, setCredentials] = useState({
     username: "",
@@ -48,6 +50,7 @@ const LoginPage = ({}) => {
     }
 
     const result = await onLogin(trimmedUsername, trimmedPassword);
+    onUpdateSession();
     if (result.status != 200) {
       setLoginError(result.message);
     }

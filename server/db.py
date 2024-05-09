@@ -68,6 +68,33 @@ def sign_in(username,password):
     return User(id=data[0],username=data[1],first_name=data[2], last_name=data[3],birthday=data[4])
     
 #tables activeSessionTokens, activePauseTokens and deletedPauseTokens
+def get_all_users_state():
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute('''
+        SELECT 
+            users.first_name, users.last_name, 
+            activeSessionTokens.id AS session_id, 
+            activePauseTokens.id AS pause_id 
+        FROM 
+            users 
+        LEFT JOIN 
+            activeSessionTokens ON users.id = activeSessionTokens.fkUser 
+        LEFT JOIN 
+            activePauseTokens ON users.id = activePauseTokens.fkUser 
+    ''')
+    data=[]
+
+    for row in cursor:
+        data.append({
+            'first_name': row[0],
+            'last_name': row[1],
+            'session_id': row[2],
+            'pause_id': row[3]
+        })
+    db.close()
+    return data
+
 def get_user_state(current_user_id):
     db=sq.connect('data.db')
     cursor=db.cursor()

@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats,records
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats,records, get_all_users_state
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -67,16 +67,17 @@ def get_all_users_stats():
     return jsonify(all_user_stats())
 
 #display all user status
-""" @app.route('/all_user_page',methods=['GET'])
+@app.route('/user_states',methods=['GET'])
 @auth.login_required
-def all_user_page():
-    return render_template('all_user_stats.html')   
+def user_states():
+    return render_template('active_users.html')   
 
-@app.route('/get_all_users_stats',methods=['GET'])
+@app.route('/get_user_states',methods=['GET'])
 @auth.login_required
-def get_all_users_stats():
-    return jsonify(all_user_stats())
- """
+def get_user_states():
+    return jsonify(get_all_users_state()),200
+
+ 
 #users routes
 #users login
 @app.route('/get_user')

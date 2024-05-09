@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import StatsCard from "../components/StatsCard";
 import RingStatsCard from "../components/RingStatsCard";
+import { useSession } from "../context/SessionContext";
 
 const ProfilePage = () => {
   const url = "http://192.168.178.23:5000";

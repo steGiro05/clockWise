@@ -36,6 +36,10 @@ export const SessionProvider = ({ children }) => {
     get_session();
   }, [session]);
 
+  const updateSession = async () => {
+    setSession(null);
+  };
+
   const createSession = async (qrcode) => {
     return await fetch(`${url}/create_session_token?qr_code=${qrcode}`, {
       method: "POST",
@@ -146,6 +150,7 @@ export const SessionProvider = ({ children }) => {
     onDeleteSession: deleteSession,
     onCreatePause: createPause,
     onDeletePause: deletePause,
+    onUpdateSession: updateSession,
   };
 
   return (
