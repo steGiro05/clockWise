@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #f5f5f5; /* Add a light gray background to the table */
+      }
+      th,
+      td {
+        border: 1px solid #ddd; /* Change border color to light gray */
+        padding: 8px 15px; /* Increase horizontal padding */
+        text-align: left;
+      }
+      th {
+        font-weight: bold; /* Make headers bold */
+        background-color: #eee; /* Add a light gray background to headers */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>All user stats</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Second Name</th>
+          <th>Average Entry Time</th>
+          <th>Average Exit Time</th>
+          <th>Average Pause Duration</th>
+        </tr>
+      </thead>
+      <tbody id="userStatsBody">
+        <!-- Rows will be added here by the script -->
+      </tbody>
+    </table>
+
+    <script src="{{url_for('static', filename='allUserScript.js')}}"></script>
+  </body>
+</html>

@@ -124,7 +124,7 @@ const ProfilePage = () => {
           title={"Average exit hour"}
           data={userStats?.avg_exit_time.split(":").slice(0, 2).join(":")}
         />
-        <RingStatsCard
+        <StatsCard
           title={"Average break duration"}
           data={(userStats?.avg_pause_duration / 60).toFixed(2) + " min"}
         />

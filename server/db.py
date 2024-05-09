@@ -263,3 +263,19 @@ def get_user_stats_byid(uid):
     if data is None:
         return None
     return UserStats(avg_entry_time=data[1], avg_exit_time=data[2], avg_pause_duration=data[3])
+
+def get_all_user_stats():
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("SELECT u.id, u.first_name, u.last_name, s.avg_entry_time, s.avg_exit_time, s.avg_pause_duration FROM user_stats s inner join users u on s.idUser = u.id")
+    data=[]
+    for row in cursor:
+        data.append({
+            'first_name': row[1],
+            'last_name': row[2],
+            'avg_entry_time': row[3],
+            'avg_exit_time': row[4],
+            'avg_pause_duration': row[5]
+        })
+    db.close()
+    return data

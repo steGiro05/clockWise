@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -40,17 +40,29 @@ def verify_password(username, password):
     if username==admin['username'] and check_password_hash(admin['hash'], password):
         return admin['username']
 
-#admin routes to display qrCode
-#to log out frfom thee admin account use this url http://log:out@localhost:5000
-@app.route('/')
+#admin routes
+#to log out from thee admin account use this url http://log:out@localhost:5000
+#display the qr code
+@app.route('/',methods=['GET'])
 @auth.login_required
 def qr_page():
     return render_template('main.html')
 
-@app.route('/get_qrcode')
+@app.route('/get_qrcode', methods=['GET'])
 @auth.login_required
 def get_qr_code():
     return send_file('qr/qr.png',mimetype='image/png')
+
+#display all users stats
+@app.route('/all_user_page',methods=['GET'])
+@auth.login_required
+def all_user_page():
+    return render_template('all_user_stats.html')   
+
+@app.route('/get_all_users_stats',methods=['GET'])
+@auth.login_required
+def get_all_users_stats():
+    return jsonify(all_user_stats())
 
 #users routes
 #users login
