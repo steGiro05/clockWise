@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users Stats</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+  </head>
+  <body class="table-container">
+    <h1>All user stats</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Second Name</th>
+          <th>Average Entry Time</th>
+          <th>Average Exit Time</th>
+          <th>Average Pause Duration</th>
+        </tr>
+      </thead>
+      <tbody id="userStateBody">
+        <!-- Rows will be added here by the script -->
+      </tbody>
+    </table>
+
+    <script src="{{url_for('static', filename='allUsersScript.js')}}"></script>
+  </body>
+</html>

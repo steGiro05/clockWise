@@ -3,20 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Get QR</title>
+    <title>Active Users</title>
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
     <script
       src="https://cdn.socket.io/4.7.5/socket.io.min.js"
       integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
       crossorigin="anonymous"
     ></script>
+
   </head>
-  <body>
-    <div class="container">
-      <div class="qr-container">
-        <img id="qrImage" src="" alt="QR Code" />
-      </div>
-    </div>
-    <script src="{{url_for('static', filename='qrPageScript.js')}}"></script>
+  <body class="table-container">
+    <h1>Active Users</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Second Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="userStatsBody">
+        <!-- Rows will be added here by the script -->
+      </tbody>
+
+    <script src="{{url_for('static', filename='activeUsersScript.js')}}"></script>
   </body>
 </html>

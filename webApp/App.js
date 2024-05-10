@@ -1,111 +1,39 @@
-import React, { useState, useEffect } from "react";
-import AppComponents from "./components/AppComponents";
-import AuthComponents from "./components/AuthComponents";
-import SplashScreen from "./components/SplashScreen";
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LoginPage from "./pages/LoginPage";
+import PagesHandler from "./pages/PagesHandler";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { SessionProvider } from "./context/SessionContext";
+import "react-native-reanimated"; //comando per fixare la navigazione da IOS
 
-const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+const Stack = createNativeStackNavigator();
 
-  useEffect(() => {
-    // Esegui il recupero dell'utente quando il componente viene montato
-    getUser();
-  }, []);
-
-  const login = async () => {
-    setIsLoading(true)
-    console.log('login');
-    await fetch('http://192.168.1.71:5000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: "marcussmith",
-        password: "marcussmith",
-      }),
-      credentials: 'include',
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        setIsLoggedIn(true);
-        setUser(json); // Imposta il nome utente
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Imposta isLoading a false una volta completato il login
-      });
-  }
-
-  const getUser = async () => {
-    setIsLoading(true)
-    console.log('get_user');
-    await fetch('http://192.168.1.71:5000/get_user', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        if (json.username) {
-          setIsLoggedIn(true);
-          setUser(json);
-        } else {
-          setIsLoggedIn(false);
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Imposta isLoading a false una volta completato il recupero dell'utente
-      });
-  }
-
-  const logout = async () => {
-    setIsLoading(true);
-    console.log('logout');
-    await fetch('http://192.168.1.71:5000/logout', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-        setIsLoggedIn(false);
-        setUsername(null);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Imposta isLoading a false una volta completato il logout
-      });
-  }
-
+export default function App() {
   return (
-    <>
-      {isLoading ? ( // Se isLoading è true, visualizza un indicatore di caricamento
-        <SplashScreen />
-      ) : (
-        isLoggedIn ? (  
-          <AppComponents user={user} /> 
-        ) : (
-          <AuthComponents login={login} />
-        )
-      )}
-    </>
+    <AuthProvider>
+      <SessionProvider>
+        <Layout></Layout>
+      </SessionProvider>
+    </AuthProvider>
   );
 }
 
-export default App;
+export const Layout = () => {
+  const { user } = useAuth();
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {user ? (
+          <Stack.Screen name="Test" component={PagesHandler} />
+        ) : (
+          <Stack.Screen name="Home" component={LoginPage} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};

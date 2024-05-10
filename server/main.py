@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats,records, get_all_users_state
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -14,6 +14,8 @@ from flask_login import LoginManager,login_user, logout_user, current_user, logi
 from flask_socketio import SocketIO
 #utils
 from utils import create_qr_code, validate_qr_code
+#date
+from datetime import date
 
 #INITIALIZATION
 app=Flask(__name__)
@@ -40,18 +42,42 @@ def verify_password(username, password):
     if username==admin['username'] and check_password_hash(admin['hash'], password):
         return admin['username']
 
-#admin routes to display qrCode
-#to log out frfom thee admin account use this url http://log:out@localhost:5000
-@app.route('/')
+#admin routes
+#to log out from thee admin account use this url http://log:out@localhost:5000
+#display the qr code
+@app.route('/',methods=['GET'])
 @auth.login_required
 def qr_page():
     return render_template('main.html')
 
-@app.route('/get_qr_code')
+@app.route('/get_qrcode', methods=['GET'])
 @auth.login_required
 def get_qr_code():
     return send_file('qr/qr.png',mimetype='image/png')
 
+#display all users stats
+@app.route('/all_user_page',methods=['GET'])
+@auth.login_required
+def all_user_page():
+    return render_template('all_user_stats.html')   
+
+@app.route('/get_all_users_stats',methods=['GET'])
+@auth.login_required
+def get_all_users_stats():
+    return jsonify(all_user_stats())
+
+#display all user status
+@app.route('/user_states',methods=['GET'])
+@auth.login_required
+def user_states():
+    return render_template('active_users.html')   
+
+@app.route('/get_user_states',methods=['GET'])
+@auth.login_required
+def get_user_states():
+    return jsonify(get_all_users_state()),200
+
+ 
 #users routes
 #users login
 @app.route('/get_user')
@@ -84,7 +110,7 @@ def login():
             if user is not None:
                 # Restituisci un messaggio di successo
                 login_user(user)
-                return jsonify({'message': 'Login successful'}), 200
+                return jsonify({'user': user.to_dict(), 'message':'Successfully logged in'}), 200
             else:
                 # Restituisci un messaggio di errore se l'utente non esiste o la password è errata
                 return jsonify({'message': 'Invalid username or password'}), 401
@@ -96,7 +122,7 @@ def login():
         return jsonify({'message': 'Method not allowed'}), 405
     
 
-@app.route('/logout')
+@app.route('/logout',methods=['POST'])
 def logout():
     logout_user()
     return jsonify({'message': 'Success'}), 200
@@ -112,7 +138,7 @@ def get_state():
     if state == 'p':
         message = 'User in pause'
         code=2
-    elif state == 'a':  
+    elif state == 'a':
         message = 'User is active'
         code=1
     else:
@@ -135,8 +161,8 @@ def create_session_token():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
     
     
 
@@ -155,8 +181,8 @@ def create_pause():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
 
 @app.route('/delete_pause',methods=['DELETE'])
 @login_required
@@ -173,8 +199,8 @@ def delete_pause():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
 
 @app.route('/delete_session',methods=['DELETE'])
 @login_required
@@ -191,9 +217,25 @@ def delete_session():
         
         #sending mesage to client to refresh qrcode
         socketio.emit('session_created')
-        return jsonify(message='codice valido')
-    return jsonify(message='codice non valido')
+        return jsonify(message='codice valido',status=200)
+    return abort(401)
 
+#extract user data for analysis and stats
+@app.route('/get_user_stats',methods=['GET'])
+@login_required
+def get_user_data():
+    user_data=get_user_stats_byid(current_user.id)
+    if user_data is not None:
+        return jsonify(user_data.to_dict()),200
+    return abort(404)
+
+#extract data from records for dashboard
+@app.route('/get_records')
+@login_required
+def get_records():
+    today = date.today().strftime('%Y-%m-%d')
+    data = records(current_user.id, today)
+    return jsonify({'message': data}), 200
 
 if __name__=='__main__':
     socketio.run(app,host= '0.0.0.0')

@@ -1,5 +1,6 @@
 import sqlite3 as sq
 from userModel import User
+from userStatsModel import UserStats
 from werkzeug.security import check_password_hash
 
 from datetime import datetime
@@ -50,22 +51,50 @@ def get_user_byid(uid):
     
     if data is None:
         return None
-    return User(data[0],data[1],data[2],data[3],data[4])
+    return User(id=data[0],first_name=data[1],last_name=data[2],birthday=data[3],username=data[4])
 
 def sign_in(username,password):
     db=sq.connect('data.db')
     cursor=db.cursor()
-    cursor.execute("SELECT id, first_name, last_name, birthday, username, hash FROM users where username = ?", [username])
+    cursor.execute("SELECT id, username,first_name, last_name, birthday, hash FROM users where username = ? ",[username])
     data=cursor.fetchone()
     db.close()
+
     
     if data is None:
         return None
     if not check_password_hash(data[5],password):
         return None
-    return User(data[0], data[1], data[2], data[3], data[4])
+    return User(id=data[0],username=data[1],first_name=data[2], last_name=data[3],birthday=data[4])
     
 #tables activeSessionTokens, activePauseTokens and deletedPauseTokens
+def get_all_users_state():
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute('''
+        SELECT 
+            users.first_name, users.last_name, 
+            activeSessionTokens.id AS session_id, 
+            activePauseTokens.id AS pause_id 
+        FROM 
+            users 
+        LEFT JOIN 
+            activeSessionTokens ON users.id = activeSessionTokens.fkUser 
+        LEFT JOIN 
+            activePauseTokens ON users.id = activePauseTokens.fkUser 
+    ''')
+    data=[]
+
+    for row in cursor:
+        data.append({
+            'first_name': row[0],
+            'last_name': row[1],
+            'session_id': row[2],
+            'pause_id': row[3]
+        })
+    db.close()
+    return data
+
 def get_user_state(current_user_id):
     db=sq.connect('data.db')
     cursor=db.cursor()
@@ -250,3 +279,48 @@ def get_admin():
     
     if (len(data)!=1):return None
     return data[0]
+
+#view user_stats
+def get_user_stats_byid(uid):
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("SELECT * FROM user_stats WHERE idUser = ?",[uid])
+    data=cursor.fetchone()
+    db.close()
+    if data is None:
+        return None
+    return UserStats(avg_entry_time=data[1], avg_exit_time=data[2], avg_pause_duration=data[3])
+
+def get_all_user_stats():
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("SELECT u.id, u.first_name, u.last_name, s.avg_entry_time, s.avg_exit_time, s.avg_pause_duration FROM user_stats s inner join users u on s.idUser = u.id")
+    data=[]
+    for row in cursor:
+        data.append({
+            'first_name': row[1],
+            'last_name': row[2],
+            'avg_entry_time': row[3],
+            'avg_exit_time': row[4],
+            'avg_pause_duration': row[5]
+        })
+    db.close()
+    return data
+#table records
+def records(current_user_id, day):
+    print(current_user_id, day)
+    db = sq.connect('data.db')
+    cursor = db.cursor()
+    cursor.execute('SELECT entry_time, exit_time FROM records WHERE fkUser = ? AND day = ?', [current_user_id, day])
+    data = []
+
+    for row in cursor:
+        data.append({
+            'entry_time': row[0],
+            'exit_time': row[1]
+        })
+    db.close()
+
+    if len(data) == 0:
+        return None
+    return data

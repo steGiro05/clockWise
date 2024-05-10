@@ -1,0 +1,27 @@
+la view sul db si chiama user_stats
+non è visibile dal web viewer
+
+campi:
+idUser, avg_entry_time, avg_exit_time, avg_pause_duration
+
+query:
+CREATE VIEW user_stats AS
+SELECT 
+  entry_exit.idUser,
+  entry_exit.avg_entry_time,
+  entry_exit.avg_exit_time,
+  pause.avg_pause_duration
+FROM 
+  (SELECT fkUser as idUser, 
+          time(avg(strftime('%s', entry_time)), 'unixepoch') as avg_entry_time,
+          time(avg(strftime('%s', exit_time)), 'unixepoch') as avg_exit_time
+   FROM records 
+   GROUP BY fkUser) as entry_exit
+JOIN
+  (SELECT 
+     r.fkUser as idUser,
+     ROUND(AVG(strftime('%s', p.end_time) - strftime('%s', p.start_time))) as avg_pause_duration
+   FROM records r 
+   INNER JOIN pauses p ON r.id = p.fkRecord
+   GROUP BY r.fkUser) as pause
+ON entry_exit.idUser = pause.idUser

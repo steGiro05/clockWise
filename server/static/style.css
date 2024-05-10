@@ -40,3 +40,25 @@ body {
   border-radius: 5px;
   background-color: #fff;
 }
+
+/* Stile del contenitore della tabella */
+.table-container {
+  padding: 0;
+  margin: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f5f5f5; /* Add a light gray background to the table */
+}
+th,
+td {
+  border: 1px solid #ddd; /* Change border color to light gray */
+  padding: 8px 15px; /* Increase horizontal padding */
+  text-align: left;
+}
+th {
+  font-weight: bold; /* Make headers bold */
+  background-color: #eee; /* Add a light gray background to headers */
+}
