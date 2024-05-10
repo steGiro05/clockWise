@@ -5,7 +5,11 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
+<<<<<<< HEAD
 from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats,records, get_all_users_state
+=======
+from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, records
+>>>>>>> 8ec45a23582a7183aafb696a3b23f74627bc7644
 #admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
@@ -83,13 +87,7 @@ def get_user_states():
 @app.route('/get_user')
 def get_user():
     if current_user.is_authenticated:
-        return jsonify({
-            'user_id': str(current_user.id),
-            'first_name': current_user.first_name,
-            'last_name': current_user.last_name,
-            'birthday': current_user.birthday,
-            'username': current_user.username
-        }), 200
+        return jsonify({'user_id': str(current_user.username)}), 200
     else:
         return jsonify({'message': 'Not logged in'}), 401
 
@@ -126,8 +124,15 @@ def login():
 def logout():
     logout_user()
     return jsonify({'message': 'Success'}), 200
+
+
+@app.route('/get_records')
+@login_required
+def get_records():
+    data = records(current_user.id, '2024-04-27')
+    return jsonify({'message': data}), 200
     
-    
+
 #gestione pause e entrate
 @app.route('/get_state')
 @login_required

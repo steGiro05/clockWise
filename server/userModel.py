@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 
 class User(UserMixin):
+<<<<<<< HEAD
     def __init__(self, id, username, first_name=None, last_name=None, birthday=None):
         self.id = id
         self.username = username
@@ -9,6 +10,12 @@ class User(UserMixin):
         self.birthday = birthday
         self.authenticated = False
 
+=======
+    def __init__(self, id, username):
+         self.id = id
+         self.username = username
+         self.authenticated = False
+>>>>>>> 8ec45a23582a7183aafb696a3b23f74627bc7644
     def is_active(self):
         return self.is_active()
 
