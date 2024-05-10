@@ -1,11 +1,14 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
+import SwiperComponent from "../components/Calendar";
+import moment from "moment";
 
 const DashboardPage = () => {
-  const url = "http://192.168.85.139:5000";
+  const url = "http://192.168.178.23:5000";
 
   const [error, setError] = useState(false);
   const [record, setRecord] = useState();
+  const [currentDate, setCurrentDate] = useState(moment().format("YYYY-MM-DD"));
 
   const fetchRecordData = async () => {
     try {
@@ -47,14 +50,20 @@ const DashboardPage = () => {
     fetchRecord();
   }, []);
 
+  const handleDateSelection = (date) => {
+    console.log(date);
+  };
+
   return (
     <View>
+      <SwiperComponent onDateSelected={handleDateSelection} />
       {error ? (
         <Text>No data for that day</Text>
       ) : (
         <View>
           <Text>Entry time: {record?.entry_time.substring(0, 5)}</Text>
           <Text>Exit time: {record?.exit_time.substring(0, 5)} </Text>
+          <Text>Today: {currentDate} </Text>
         </View>
       )}
     </View>

@@ -8,11 +8,10 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import StatsCard from "../components/StatsCard";
-import RingStatsCard from "../components/RingStatsCard";
-import { useSession } from "../context/SessionContext";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const ProfilePage = () => {
-  const url = "http://192.168.85.139:5000";
+  const url = "http://192.168.178.23:5000";
   const { user, onLogout } = useAuth();
 
   const { username, first_name, last_name, birthday } = user;
@@ -22,11 +21,6 @@ const ProfilePage = () => {
 
   const logout = () => {
     onLogout();
-  };
-
-  const changePassword = () => {
-    // Implement password change logic here
-    // For example, navigate to a change password page
   };
 
   const fetchUserStats = async () => {
@@ -101,32 +95,32 @@ const ProfilePage = () => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={changePassword}
-          style={[styles.button, styles.blueButton]}
-        >
-          <Text style={styles.buttonText}>Change Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={logout}
           style={[styles.button, styles.redButton]}
         >
-          <Text style={styles.buttonText}>Logout</Text>
+          <Text style={[styles.buttonText, { marginRight: 10 }]}>Logout</Text>
+          <MaterialIcons name="logout" size={24} color="white" />
         </TouchableOpacity>
       </View>
       <Text style={styles.title}>My Stats</Text>
       <View style={styles.myAccount}>
         <StatsCard
-          title={"Average entry hour"}
+          title={"Average Entry Hour"}
           data={userStats?.avg_entry_time.split(":").slice(0, 2).join(":")}
-          barColor={"red"}
+          mainColor={"blue"}
+          backgroundColor={"#EAEFFF"}
         />
         <StatsCard
-          title={"Average exit hour"}
+          title={"Average Exit Hour"}
           data={userStats?.avg_exit_time.split(":").slice(0, 2).join(":")}
+          mainColor={"red"}
+          backgroundColor={"#FFC8C0"}
         />
         <StatsCard
-          title={"Average break duration"}
+          title={"Average Break"}
           data={(userStats?.avg_pause_duration / 60).toFixed(2) + " min"}
+          mainColor={"orange"}
+          backgroundColor={"#FFEEC0"}
         />
       </View>
     </ScrollView>
@@ -166,22 +160,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
+    flexDirection: "row",
     marginTop: 10,
     borderRadius: 10,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginBottom: 15,
   },
   buttonText: {
     fontSize: 16,
     color: "white",
   },
-  blueButton: {
-    backgroundColor: "blue",
-  },
   redButton: {
-    backgroundColor: "red",
+    backgroundColor: "#FF4141",
   },
 });
 
