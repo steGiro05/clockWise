@@ -12,7 +12,7 @@ import RingStatsCard from "../components/RingStatsCard";
 import { useSession } from "../context/SessionContext";
 
 const ProfilePage = () => {
-  const url = "http://192.168.178.23:5000";
+  const url = "http://192.168.85.139:5000";
   const { user, onLogout } = useAuth();
 
   const { username, first_name, last_name, birthday } = user;

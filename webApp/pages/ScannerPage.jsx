@@ -46,9 +46,10 @@ export default function ScannerPage() {
   };
 
   useEffect(() => {
+    setAction(null);
     if (session == 0) setAction("enter");
     else if (session == 2) setAction("end_break");
-  }, [session, action]);
+  }, [session]);
 
   return action ? (
     <QrScanner onScan={onScan} />

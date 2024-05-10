@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import PagesHandler from "./pages/PagesHandler";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { SessionProvider } from "./context/SessionContext";
+import "react-native-reanimated"; //comando per fixare la navigazione da IOS
 
 const Stack = createNativeStackNavigator();
 
