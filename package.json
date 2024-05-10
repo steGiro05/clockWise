@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "expo-barcode-scanner": "^12.9.3"
+    "expo-barcode-scanner": "^12.9.3",
+    "react-native-splash-screen": "^3.3.0"
   }
 }
