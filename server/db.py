@@ -51,20 +51,12 @@ def get_user_byid(uid):
     
     if data is None:
         return None
-<<<<<<< HEAD
     return User(id=data[0],first_name=data[1],last_name=data[2],birthday=data[3],username=data[4])
-=======
-    return User(data[0],data[1])
->>>>>>> 8ec45a23582a7183aafb696a3b23f74627bc7644
 
 def sign_in(username,password):
     db=sq.connect('data.db')
     cursor=db.cursor()
-<<<<<<< HEAD
     cursor.execute("SELECT id, username,first_name, last_name, birthday, hash FROM users where username = ? ",[username])
-=======
-    cursor.execute("SELECT id, username, hash FROM users where username = ? ",[username])
->>>>>>> 8ec45a23582a7183aafb696a3b23f74627bc7644
     data=cursor.fetchone()
     db.close()
 
@@ -73,11 +65,7 @@ def sign_in(username,password):
         return None
     if not check_password_hash(data[2],password):
         return None
-<<<<<<< HEAD
     return User(id=data[0],username=data[1],first_name=data[2], last_name=data[3],birthday=data[4])
-=======
-    return User(data[0],data[1])
->>>>>>> 8ec45a23582a7183aafb696a3b23f74627bc7644
     
 #tables activeSessionTokens, activePauseTokens and deletedPauseTokens
 def get_all_users_state():
@@ -292,7 +280,6 @@ def get_admin():
     if (len(data)!=1):return None
     return data[0]
 
-<<<<<<< HEAD
 #view user_stats
 def get_user_stats_byid(uid):
     db=sq.connect('data.db')
@@ -322,9 +309,6 @@ def get_all_user_stats():
 #table records
 def records(current_user_id, day):
     print(current_user_id, day)
-=======
-def records(current_user_id, day):
->>>>>>> 8ec45a23582a7183aafb696a3b23f74627bc7644
     db = sq.connect('data.db')
     cursor = db.cursor()
     cursor.execute('SELECT entry_time, exit_time FROM records WHERE fkUser = ? AND day = ?', [current_user_id, day])
