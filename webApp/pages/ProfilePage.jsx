@@ -42,7 +42,6 @@ const ProfilePage = () => {
       const data = await response.json();
 
       // Handle your data here
-      console.log(data);
       setError(false);
 
       return data;

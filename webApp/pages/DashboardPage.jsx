@@ -7,7 +7,7 @@ import url from "../utils/url";
 const DashboardPage = () => {
   const [error, setError] = useState(false);
   const [record, setRecord] = useState();
-  const [currentDate, setCurrentDate] = useState(moment().format("YYYY-MM-DD"));
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   const fetchRecordData = async () => {
     try {
@@ -50,19 +50,22 @@ const DashboardPage = () => {
   }, []);
 
   const handleDateSelection = (date) => {
-    console.log(date);
+    setSelectedDate(date);
   };
 
   return (
     <View>
-      <Calendar onDateSelected={handleDateSelection} />
+      <Calendar
+        onDateSelected={handleDateSelection}
+        selectedDate={selectedDate}
+      />
       {error ? (
         <Text>No data for that day</Text>
       ) : (
         <View>
           <Text>Entry time: {record?.entry_time.substring(0, 5)}</Text>
           <Text>Exit time: {record?.exit_time.substring(0, 5)} </Text>
-          <Text>Today: {currentDate} </Text>
+          <Text>day: {selectedDate.format("DD/MM/YYYY")} </Text>
         </View>
       )}
     </View>

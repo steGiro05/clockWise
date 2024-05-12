@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 
-const Calendar = ({ onDateSelected }) => {
+const Calendar = ({ onDateSelected, selectedDate }) => {
   const [holidaysArray, setHolidaysArray] = useState([]);
 
   useEffect(() => {
@@ -29,7 +29,6 @@ const Calendar = ({ onDateSelected }) => {
         })
         .flat();
       setHolidaysArray(holidays);
-      console.log(holidays);
     };
 
     fetchHolidays();
@@ -73,7 +72,7 @@ const Calendar = ({ onDateSelected }) => {
         highlightDateNameStyle={{ color: "white" }}
         highlightDateNumberStyle={{ color: "white" }}
         highlightDateContainerStyle={{ backgroundColor: "blue" }}
-        selectedDate={moment()}
+        selectedDate={selectedDate}
         maxDate={moment()}
         minDate={moment().startOf("year")}
         markedDates={markedDatesFunc}

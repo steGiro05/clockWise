@@ -3,7 +3,7 @@ import QrScanner from "../components/QrScanner";
 import { useSession } from "../context/SessionContext";
 import ActionPicker from "../components/ActionPicker";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 
 export default function ScannerPage() {
   const {
@@ -18,7 +18,16 @@ export default function ScannerPage() {
   const navigation = useNavigation();
 
   const handleActionPick = (selectedAction) => {
-    setAction(selectedAction);
+    if (selectedAction === "exit") {
+      Alert.alert("Attention", "If you proceed you will clock out for today", [
+        {
+          text: "Cancel",
+          onPress: () => setAction(null),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => setAction(selectedAction) },
+      ]);
+    }
   };
 
   const onScan = async (qrcode) => {
