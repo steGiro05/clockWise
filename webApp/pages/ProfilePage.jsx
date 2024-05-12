@@ -12,7 +12,7 @@ import StatsCard from "../components/StatsCard";
 import { MaterialIcons } from "@expo/vector-icons";
 import url from "../utils/url";
 
-const ProfilePage = () => {
+const ProfilePage = ({ navigation }) => {
   const { user, onLogout } = useAuth();
   const { session } = useSession();
 
@@ -20,6 +20,10 @@ const ProfilePage = () => {
 
   const [userStats, setUserStats] = useState();
   const [error, setError] = useState(false);
+
+  const changePw = () => {
+    navigation.navigate("ChangePw");
+  };
 
   const logout = () => {
     onLogout();
@@ -107,6 +111,12 @@ const ProfilePage = () => {
           style={[styles.button, styles.redButton]}
         >
           <Text style={[styles.buttonText, { marginRight: 10 }]}>Logout</Text>
+          <MaterialIcons name="logout" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={changePw} style={[styles.button]}>
+          <Text style={[styles.buttonText, { marginRight: 10 }]}>
+            Change Password
+          </Text>
           <MaterialIcons name="logout" size={24} color="white" />
         </TouchableOpacity>
       </View>

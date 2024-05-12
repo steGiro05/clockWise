@@ -36,47 +36,50 @@ def load_user(uid):
     return user
 
 #ROUTES
-@auth.verify_password
-def verify_password(username, password):
-    admin=get_admin()
-    if username==admin['username'] and check_password_hash(admin['hash'], password):
-        return admin['username']
 
-#admin routes
-#to log out from thee admin account use this url http://log:out@localhost:5000
-#display the qr code
+#web pages
+
 @app.route('/',methods=['GET'])
 @auth.login_required
 def qr_page():
     return render_template('main.html')
 
+@app.route('/all_user_page',methods=['GET'])
+@auth.login_required
+def all_user_page():
+    return render_template('all_user_stats.html')   
+
+@app.route('/user_states',methods=['GET'])
+@auth.login_required
+def user_states():
+    return render_template('active_users.html') 
+
+#admin routes
+#to log out from thee admin account use this url http://log:out@localhost:5000
+#display the qr code
+
+@auth.verify_password
+def verify_password(username, password):
+    admin=get_admin()
+    if username==admin['username'] and check_password_hash(admin['hash'], password):
+        return admin['username']
+    
 @app.route('/get_qrcode', methods=['GET'])
 @auth.login_required
 def get_qr_code():
     return send_file('qr/qr.png',mimetype='image/png')
 
 #display all users stats
-@app.route('/all_user_page',methods=['GET'])
-@auth.login_required
-def all_user_page():
-    return render_template('all_user_stats.html')   
-
 @app.route('/get_all_users_stats',methods=['GET'])
 @auth.login_required
 def get_all_users_stats():
     return jsonify(all_user_stats())
 
 #display all user status
-@app.route('/user_states',methods=['GET'])
-@auth.login_required
-def user_states():
-    return render_template('active_users.html')   
-
 @app.route('/get_user_states',methods=['GET'])
 @auth.login_required
 def get_user_states():
     return jsonify(get_all_users_state()),200
-
  
 #users routes
 #users login
