@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import SwiperComponent from "../components/Calendar";
+import Calendar from "../components/Calendar";
 import moment from "moment";
 import url from "../utils/url";
 
@@ -55,7 +55,7 @@ const DashboardPage = () => {
 
   return (
     <View>
-      <SwiperComponent onDateSelected={handleDateSelection} />
+      <Calendar onDateSelected={handleDateSelection} />
       {error ? (
         <Text>No data for that day</Text>
       ) : (

@@ -69,8 +69,18 @@ const ProfilePage = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {error && (
-        <View style={{ backgroundColor: "red", padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: "white" }}>No user Data!</Text>
+        <View
+          style={{
+            backgroundColor: "#FFC574",
+            padding: 10,
+            borderRadius: 5,
+            marginBottom: 10,
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "600" }}>
+            Try the application for the first time and you will see your stats
+            here!
+          </Text>
         </View>
       )}
       <Text style={styles.title}>My Account</Text>

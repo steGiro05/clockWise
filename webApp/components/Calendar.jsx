@@ -1,11 +1,58 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 
 const Calendar = ({ onDateSelected }) => {
-  const datesBlacklistFunc = (date) => {
-    return date.isoWeekday() === 6 || date.isoWeekday() === 7; // disable Saturdays and Sundays
+  const [holidaysArray, setHolidaysArray] = useState([]);
+
+  useEffect(() => {
+    const fetchHolidays = async () => {
+      const response = await fetch(
+        `https://openholidaysapi.org/PublicHolidays?countryIsoCode=IT&validFrom=${moment()
+          .startOf("year")
+          .format("YYYY-MM-DD")}&validTo=${moment()
+          .endOf("year")
+          .format("YYYY-MM-DD")}`
+      );
+      const holidaysData = await response.json();
+      const holidays = holidaysData
+        .map((holiday) => {
+          const startDate = moment(holiday.startDate);
+          const endDate = moment(holiday.endDate);
+          const dates = [];
+          while (startDate.isSameOrBefore(endDate)) {
+            dates.push(startDate.format("YYYY-MM-DD"));
+            startDate.add(1, "day");
+          }
+          return dates;
+        })
+        .flat();
+      setHolidaysArray(holidays);
+      console.log(holidays);
+    };
+
+    fetchHolidays();
+  }, []);
+
+  const markedDatesFunc = (date) => {
+    const formattedDate = date.format("YYYY-MM-DD");
+    if (
+      date.isoWeekday() === 6 ||
+      date.isoWeekday() === 7 ||
+      holidaysArray.includes(formattedDate)
+    ) {
+      // Saturdays, Sundays and holidays
+      return {
+        lines: [
+          {
+            color: "green", // replace <string> with the actual color
+            selectedColor: "transparent", // replace <string> (optional) with the actual color
+          },
+        ],
+      };
+    }
+    return {};
   };
 
   return (
@@ -28,7 +75,8 @@ const Calendar = ({ onDateSelected }) => {
         highlightDateContainerStyle={{ backgroundColor: "blue" }}
         selectedDate={moment()}
         maxDate={moment()}
-        datesBlacklist={datesBlacklistFunc}
+        minDate={moment().startOf("year")}
+        markedDates={markedDatesFunc}
         onDateSelected={onDateSelected}
       />
     </View>

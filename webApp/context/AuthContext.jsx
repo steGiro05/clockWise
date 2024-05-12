@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         // Se la risposta non è "ok", questa sezione verrà eseguita
         console.log("Error:", error);
-        return { message: "Unauthorized", status: 401 };
+        return { message: "Wrong username or Password", status: 401 };
       });
   };
 
