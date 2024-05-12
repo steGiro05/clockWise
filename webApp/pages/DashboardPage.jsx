@@ -4,7 +4,7 @@ import SwiperComponent from "../components/Calendar";
 import moment from "moment";
 
 const DashboardPage = () => {
-  const url = "http://192.168.178.23:5000";
+  const url = "http://192.168.85.139:5000";
 
   const [error, setError] = useState(false);
   const [record, setRecord] = useState();

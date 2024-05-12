@@ -41,5 +41,5 @@ fetch("http://localhost:5000/get_all_users_stats")
   })
   .catch((error) => {
     // Handle the error here
-    console.error("There has been a problem with your fetch operation:", error);
+    console.log("There has been a problem with your fetch operation:", error);
   });

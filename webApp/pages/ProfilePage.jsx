@@ -7,12 +7,14 @@ import {
   ScrollView,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
+import { useSession } from "../context/SessionContext";
 import StatsCard from "../components/StatsCard";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ProfilePage = () => {
-  const url = "http://192.168.178.23:5000";
+  const url = "http://192.168.85.139:5000";
   const { user, onLogout } = useAuth();
+  const { session } = useSession();
 
   const { username, first_name, last_name, birthday } = user;
 
@@ -47,10 +49,7 @@ const ProfilePage = () => {
     } catch (error) {
       // Handle the error here
       setError(true);
-      console.error(
-        "There has been a problem with your fetch operation:",
-        error
-      );
+      console.log("There has been a problem with your fetch operation:", error);
     }
   };
 
@@ -65,13 +64,13 @@ const ProfilePage = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [session]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {error && (
         <View style={{ backgroundColor: "red", padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: "white" }}>Error fetching user stats</Text>
+          <Text style={{ color: "white" }}>No user Data!</Text>
         </View>
       )}
       <Text style={styles.title}>My Account</Text>
@@ -102,27 +101,31 @@ const ProfilePage = () => {
           <MaterialIcons name="logout" size={24} color="white" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>My Stats</Text>
-      <View style={styles.myAccount}>
-        <StatsCard
-          title={"Average Entry Hour"}
-          data={userStats?.avg_entry_time.split(":").slice(0, 2).join(":")}
-          mainColor={"blue"}
-          backgroundColor={"#EAEFFF"}
-        />
-        <StatsCard
-          title={"Average Exit Hour"}
-          data={userStats?.avg_exit_time.split(":").slice(0, 2).join(":")}
-          mainColor={"red"}
-          backgroundColor={"#FFC8C0"}
-        />
-        <StatsCard
-          title={"Average Break"}
-          data={(userStats?.avg_pause_duration / 60).toFixed(2) + " min"}
-          mainColor={"orange"}
-          backgroundColor={"#FFEEC0"}
-        />
-      </View>
+      {!error && (
+        <>
+          <Text style={styles.title}>My Stats</Text>
+          <View style={styles.myAccount}>
+            <StatsCard
+              title={"Average Entry Hour"}
+              data={userStats?.avg_entry_time.split(":").slice(0, 2).join(":")}
+              mainColor={"blue"}
+              backgroundColor={"#EAEFFF"}
+            />
+            <StatsCard
+              title={"Average Exit Hour"}
+              data={userStats?.avg_exit_time.split(":").slice(0, 2).join(":")}
+              mainColor={"red"}
+              backgroundColor={"#FFC8C0"}
+            />
+            <StatsCard
+              title={"Average Break"}
+              data={(userStats?.avg_pause_duration / 60).toFixed(2) + " min"}
+              mainColor={"orange"}
+              backgroundColor={"#FFEEC0"}
+            />
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 };
