@@ -22,6 +22,8 @@ JOIN
      r.fkUser as idUser,
      ROUND(AVG(strftime('%s', p.end_time) - strftime('%s', p.start_time))) as avg_pause_duration
    FROM records r 
-   INNER JOIN pauses p ON r.id = p.fkRecord
+   left JOIN pauses p ON r.id = p.fkRecord
    GROUP BY r.fkUser) as pause
 ON entry_exit.idUser = pause.idUser
+
+si usa la left join per selezionare anche i records senza pause
