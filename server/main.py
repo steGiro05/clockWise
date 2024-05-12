@@ -83,7 +83,13 @@ def get_user_states():
 @app.route('/get_user')
 def get_user():
     if current_user.is_authenticated:
-        return jsonify({'user_id': str(current_user.username)}), 200
+        return jsonify({
+            'user_id': str(current_user.id),
+            'first_name': current_user.first_name,
+            'last_name': current_user.last_name,
+            'birthday': current_user.birthday,
+            'username': current_user.username
+        }), 200
     else:
         return jsonify({'message': 'Not logged in'}), 401
 
@@ -120,15 +126,8 @@ def login():
 def logout():
     logout_user()
     return jsonify({'message': 'Success'}), 200
-
-
-@app.route('/get_records')
-@login_required
-def get_records():
-    data = records(current_user.id, '2024-04-27')
-    return jsonify({'message': data}), 200
     
-
+    
 #gestione pause e entrate
 @app.route('/get_state')
 @login_required
@@ -231,7 +230,15 @@ def get_user_data():
     return abort(404)
 
 #extract data from records for dashboard
-
+@app.route('/get_records')
+@login_required
+def get_records():
+    day = request.args.get('day')
+    data = records(current_user.id, day)
+    if data is None:
+        return jsonify({'message': 'No data found'}), 404
+    
+    return jsonify({'message': data}), 200
 
 if __name__=='__main__':
     socketio.run(app,host= '0.0.0.0')

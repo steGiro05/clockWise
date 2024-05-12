@@ -1,1 +1,1 @@
-export const url = "https://verbose-engine-4p9w97wv54g2pvr-5000.app.github.dev";
+export const url = "http://192.168.1.71:5000";

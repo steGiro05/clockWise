@@ -45,7 +45,7 @@ def post_qr_code(new_qr_code):
 def get_user_byid(uid):
     db=sq.connect('data.db')
     cursor=db.cursor()
-    cursor.execute("SELECT id, username FROM users where id = ?",[uid])
+    cursor.execute("SELECT id, first_name, last_name, birthday, username FROM users where id = ?",[uid])
     data=cursor.fetchone()
     db.close()
     
@@ -63,7 +63,7 @@ def sign_in(username,password):
     
     if data is None:
         return None
-    if not check_password_hash(data[2],password):
+    if not check_password_hash(data[5],password):
         return None
     return User(id=data[0],username=data[1],first_name=data[2], last_name=data[3],birthday=data[4])
     
@@ -311,16 +311,24 @@ def records(current_user_id, day):
     print(current_user_id, day)
     db = sq.connect('data.db')
     cursor = db.cursor()
-    cursor.execute('SELECT entry_time, exit_time FROM records WHERE fkUser = ? AND day = ?', [current_user_id, day])
-    data = []
+    cursor.execute("SELECT id FROM records WHERE fkUser = ? AND day = ?", (current_user_id, day))
 
-    for row in cursor:
-        data.append({
-            'entry_time': row[0],
-            'exit_time': row[1]
-        })
-    db.close()
-
-    if len(data) == 0:
+    record_id = cursor.fetchone()
+    if not record_id:
         return None
-    return data
+    record_id = record_id[0]
+
+    cursor.execute("SELECT entry_time, exit_time FROM records WHERE id = ?", [record_id])
+    entry_time, exit_time = cursor.fetchone()
+
+    cursor.execute("SELECT start_time, end_time FROM pauses WHERE fkRecord = ?", [record_id])
+    pauses = cursor.fetchall()
+
+    pauses = [{'start_time': start_time, 'end_time': end_time} for start_time, end_time in pauses]
+
+    db.close()
+    return {
+        'entry_time': entry_time,
+        'exit_time': exit_time,
+        'pauses': pauses
+    }
