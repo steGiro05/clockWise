@@ -1,7 +1,7 @@
 import sqlite3 as sq
 from userModel import User
 from userStatsModel import UserStats
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from datetime import datetime
 
@@ -66,6 +66,33 @@ def sign_in(username,password):
     if not check_password_hash(data[5],password):
         return None
     return User(id=data[0],username=data[1],first_name=data[2], last_name=data[3],birthday=data[4])
+
+def change_password(id,old_password,new_password):
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    cursor.execute("SELECT hash FROM users where id = ? ",[id])
+    data=cursor.fetchone()
+    db.close()
+    if data is None:
+        return False
+    if not check_password_hash(data[0],old_password):
+        return False
+
+    db=sq.connect('data.db')
+    cursor=db.cursor()
+    try:
+        # Esegui l'operazione di aggiornamento
+        hashed_password = generate_password_hash(new_password)
+        cursor.execute("UPDATE users SET hash = ? WHERE id = ?", (hashed_password, id))
+        db.commit()
+        return True
+    except Exception as e:
+        # Se si verifica un errore, esegui il rollback delle modifiche
+        db.rollback()
+        return False
+    finally:
+        # Chiudi la connessione al database
+        db.close()
     
 #tables activeSessionTokens, activePauseTokens and deletedPauseTokens
 def get_all_users_state():

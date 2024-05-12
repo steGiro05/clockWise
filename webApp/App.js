@@ -60,6 +60,7 @@ function Home() {
 //main navigation layout with protected routes
 export const Layout = () => {
   const { user } = useAuth();
+  const { session } = useSession();
 
   return (
     <NavigationContainer>

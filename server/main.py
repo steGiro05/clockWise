@@ -5,8 +5,21 @@ from flask import Flask, request, jsonify,abort, render_template, send_file
 from flask_cors import CORS
 #auth
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import get_admin, get_user_byid, sign_in, upload_session_token,upload_pause_token,delete_pause_token,delete_session_token, get_user_state, get_user_stats_byid, get_all_user_stats as all_user_stats,records, get_all_users_state
-#admin auth
+from db import (
+    get_admin, 
+    get_user_byid, 
+    sign_in, 
+    upload_session_token,
+    upload_pause_token,
+    delete_pause_token,
+    delete_session_token, 
+    get_user_state, 
+    get_user_stats_byid, 
+    get_all_user_stats as all_user_stats,
+    records, 
+    get_all_users_state, 
+    change_password as change_password_db
+)#admin auth
 from flask_httpauth import HTTPBasicAuth
 #users auth
 from flask_login import LoginManager,login_user, logout_user, current_user, login_required
@@ -129,6 +142,24 @@ def login():
 def logout():
     logout_user()
     return jsonify({'message': 'Success'}), 200
+
+#cambio pw
+@app.route('/change_password',methods=['POST'])
+@login_required
+def change_password():
+    data = request.get_json()
+    if 'old_password' in data and 'new_password' in data:
+        old_password = data['old_password']
+        new_password = data['new_password']
+        if sign_in(current_user.username,old_password) is not None:
+            if change_password_db(id=current_user.id,old_password=old_password, new_password=new_password):
+                return jsonify({'message': 'Password changed successfully'}), 200
+            else:
+                return jsonify({'message': 'Error changing password'}), 500
+        else:
+            return jsonify({'message': 'Invalid password'}), 401
+    else:
+        return jsonify({'message': 'Missing parameters'}), 400
     
     
 #gestione pause e entrate

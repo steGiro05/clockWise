@@ -9,7 +9,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useSession } from "../context/SessionContext";
 import StatsCard from "../components/StatsCard";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Feather } from "@expo/vector-icons";
 import url from "../utils/url";
 
 const ProfilePage = ({ navigation }) => {
@@ -113,11 +113,14 @@ const ProfilePage = ({ navigation }) => {
           <Text style={[styles.buttonText, { marginRight: 10 }]}>Logout</Text>
           <MaterialIcons name="logout" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={changePw} style={[styles.button]}>
+        <TouchableOpacity
+          onPress={changePw}
+          style={[styles.button, styles.yellowButton]}
+        >
           <Text style={[styles.buttonText, { marginRight: 10 }]}>
             Change Password
           </Text>
-          <MaterialIcons name="logout" size={24} color="white" />
+          <Feather name="edit" size={24} color="white" />
         </TouchableOpacity>
       </View>
       {!error && (
@@ -205,6 +208,9 @@ const styles = StyleSheet.create({
   },
   redButton: {
     backgroundColor: "#FF4141",
+  },
+  yellowButton: {
+    backgroundColor: "#FFD700",
   },
 });
 
