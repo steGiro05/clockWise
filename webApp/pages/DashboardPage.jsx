@@ -2,10 +2,9 @@ import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import SwiperComponent from "../components/Calendar";
 import moment from "moment";
+import url from "../utils/url";
 
 const DashboardPage = () => {
-  const url = "http://192.168.85.139:5000";
-
   const [error, setError] = useState(false);
   const [record, setRecord] = useState();
   const [currentDate, setCurrentDate] = useState(moment().format("YYYY-MM-DD"));

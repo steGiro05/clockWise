@@ -10,9 +10,9 @@ import { useAuth } from "../context/AuthContext";
 import { useSession } from "../context/SessionContext";
 import StatsCard from "../components/StatsCard";
 import { MaterialIcons } from "@expo/vector-icons";
+import url from "../utils/url";
 
 const ProfilePage = () => {
-  const url = "http://192.168.85.139:5000";
   const { user, onLogout } = useAuth();
   const { session } = useSession();
 

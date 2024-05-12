@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import url from "../utils/url";
 
 const SessionContext = createContext();
-const url = "http://192.168.85.139:5000";
 
 export const useSession = () => {
   return useContext(SessionContext);
