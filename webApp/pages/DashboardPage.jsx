@@ -5,45 +5,41 @@ import moment from "moment";
 import { url } from "../components/url";
 
 const RecordScreen = ({ record }) => {
-  console.log(record);
-  // Verifica se record è definito
-  if (!record) {
-    return <Text>No record data available</Text>;
-  }
-
-  return (
-    <View>
-      <View>
-        <Text>Entry Time:</Text>
-        <Text>{record.entry_time}</Text>
-      </View>
-      <View>
-        <Text>Exit Time:</Text>
-        <Text>{record.exit_time}</Text>
-      </View>
-      <View>
-        <Text>Pauses:</Text>
-        {record.pauses.length > 0 ? (
-          record.pauses.map((pause, index) => (
-            <View key={index}>
-              <Text>Pause {index + 1}:</Text>
-              <Text>Start: {pause.start_time}, End: {pause.end_time}</Text>
-            </View>
-          ))
-        ) : (
-          <Text>No pauses</Text>
+  // Verifica se record è definito e gestisce la visualizzazione dei dati
+  
+  if (record) {
+    return (
+      <View style={styles.container}>
+        <View style={[styles.item, styles.green]}>
+          <Text style={styles.label}>Start Time:</Text>
+          <Text style={styles.value}>{record.entry_time}</Text>
+        </View>
+        {record.pauses && record.pauses.length > 0 && (
+          <View style={[styles.item, styles.yellow]}>
+            <Text style={styles.label}>Pauses:</Text>
+            {record.pauses.map((pause, index) => (
+              <View key={index} style={styles.pauseContainer}>
+                <Text style={styles.pauseText}>Pause {index + 1}:</Text>
+                <Text style={styles.pauseTime}>Start: {pause.start_time}, End: {pause.end_time}</Text>
+              </View>
+            ))}
+          </View>
         )}
+        <View style={[styles.item, styles.red]}>
+          <Text style={styles.label}>End Time:</Text>
+          <Text style={styles.value}>{record.exit_time}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 
 
 const DashboardPage = () => {
-  const [error, setError] = useState(false);
   const [record, setRecord] = useState();
   const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
+  const [error, setError] = useState();
   
   const fetchRecordData = async () => {
     try {
@@ -60,42 +56,24 @@ const DashboardPage = () => {
       }
       
       const data = await response.json();
-      
-      // Handle your data here
-      setError(false);
-      
-      return data;
+      setRecord(data.message);
+      setError(null);
     } catch (error) {
-      // Handle the error here
-      setError(true);
       console.log("There has been a problem with your fetch operation:", error);
+      setError(error);
     }
   };
   
-  const handleDateSelection = (date) => {
+  const handleDateSelection = async (date) => {
     setSelectedDate(date.format("YYYY-MM-DD"));
-    
-    const fetchRecord = async () => {
-      try {
-        const result = await fetchRecordData();
-        setRecord(result.message);
-        // console.log(record);
-      } catch (error) {
-        console.log("Failed to fetch user stats:", error);
-      }
-    }
-    
-    fetchRecord();
+    await fetchRecordData();
   };
   
   return (
     <View>
-      <Calendar
-        onDateSelected={handleDateSelection}
-        selectedDate={selectedDate}
-        />
+      <Calendar onDateSelection={handleDateSelection} />
       {error ? (
-        <Text>No data for that day</Text>
+        <Text>There was an error loading the data</Text>
       ) : (
         <RecordScreen record={record} />
       )}
@@ -105,3 +83,50 @@ const DashboardPage = () => {
 
 
 export default DashboardPage;
+
+
+/////////////////////////////////////////////////////
+
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  item: {
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 5,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  value: {
+    fontSize: 16,
+  },
+  green: {
+    backgroundColor: "green",
+  },
+  yellow: {
+    backgroundColor: "yellow",
+  },
+  red: {
+    backgroundColor: "red",
+  },
+  pauseContainer: {
+    marginBottom: 5,
+  },
+  pauseText: {
+    fontWeight: "bold",
+  },
+  pauseTime: {
+    marginLeft: 20,
+  },
+  noDataContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 50,
+  },
+});
+
