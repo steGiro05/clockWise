@@ -43,7 +43,7 @@ function Home() {
         tabBarInactiveTintColor: "gray", // Imposta il colore grigio per le etichette delle schede inattive
         tabBarStyle: {
           display: "flex",
-          height: 60, // Altezza del footer
+          height: "10%", // Altezza del footer
         },
         headerStyle: {
           height: 120, // Altezza dell'header
