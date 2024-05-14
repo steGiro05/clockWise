@@ -61,20 +61,22 @@ const DashboardPage = () => {
 
   return (
       <View>
-          <Text>Dashboard</Text>
           <Calendar
               onDateSelected={handleDateSelected}
               selectedDate={selectedDate}
-          />
-          {records ? (
-              
-              <RecordScreen record={records} />
-              
-          ) : (
-              <View style={styles.noDataContainer}>
-                  <Text>No data available for this day</Text>
+              />
+
+              <View style={[styles.container, styles.dashboard]}>
+                  <Text style={[styles.title, styles.container]}
+                  >Dashboard</Text>
+                  {records ? (
+                      <RecordScreen record={records} />
+                  ) : (
+                      <View style={styles.noDataContainer}>
+                          <Text>No data available</Text>
+                      </View>
+                  )}
               </View>
-          )}
       </View>
   );
 }
@@ -99,13 +101,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   green: {
-    backgroundColor: "green",
+    backgroundColor: "#9CE49C",
   },
   yellow: {
-    backgroundColor: "yellow",
+    backgroundColor: "#FFFACD",
   },
   red: {
-    backgroundColor: "red",
+    backgroundColor: "#FFC0CB",
   },
   pauseContainer: {
     marginBottom: 5,
@@ -120,5 +122,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 50,
+  },
+  dashboard : {
+    backgroundColor: "#E4E2E9",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    minHeight: "100%",
+
+  },
+  title : {
+    fontSize: 20,
+    fontWeight: "semibold",
   },
 });
