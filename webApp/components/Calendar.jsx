@@ -33,6 +33,7 @@ const Calendar = ({ onDateSelected, selectedDate }) => {
 
     fetchHolidays();
   }, []);
+
   const markedDatesFunc = (date) => {
     const formattedDate = date.format("YYYY-MM-DD");
     if (
@@ -52,6 +53,7 @@ const Calendar = ({ onDateSelected, selectedDate }) => {
     }
     return {};
   };
+
   return (
     <View>
       <CalendarStrip
@@ -79,4 +81,5 @@ const Calendar = ({ onDateSelected, selectedDate }) => {
     </View>
   );
 };
+
 export default Calendar;

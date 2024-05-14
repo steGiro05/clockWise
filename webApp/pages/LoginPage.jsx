@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import {
   View,
   Text,
@@ -43,9 +42,9 @@ const LoginPage = ({}) => {
       return;
     }
 
-    // Controllo se lo username ha almeno 5 caratteri
-    if (trimmedUsername.length < 5) {
-      setLoginError("Username must be at least 5 characters long");
+    // Controllo se lo username ha almeno 4 caratteri
+    if (trimmedUsername.length < 4) {
+      setLoginError("Username must be at least 4 characters long");
       setIsLoading(false);
       return;
     }

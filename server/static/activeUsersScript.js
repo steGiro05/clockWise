@@ -60,9 +60,6 @@ const fetchUsersStatus = () => {
     })
     .catch((error) => {
       // Handle the error here
-      console.error(
-        "There has been a problem with your fetch operation:",
-        error
-      );
+      console.log("There has been a problem with your fetch operation:", error);
     });
 };

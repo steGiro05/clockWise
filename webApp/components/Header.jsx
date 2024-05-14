@@ -3,15 +3,19 @@ import { View, Text, ImageBackground } from "react-native";
 
 const HeaderComponent = ({ user, status }) => {
   let statusColor;
+  let statusName;
   switch (status) {
     case 0:
       statusColor = "red";
+      statusName = "Not Clocked In";
       break;
     case 1:
       statusColor = "lightgreen"; // Verde più acceso per stato 1
+      statusName = "Clocked In";
       break;
     case 2:
       statusColor = "yellow"; // Colore giallo per stato 2
+      statusName = "On Break";
       break;
     default:
       statusColor = "transparent"; // Colore di default o trasparente per altri stati
@@ -33,12 +37,17 @@ const HeaderComponent = ({ user, status }) => {
             <Text style={styles.text}>
               {user.first_name} {user.last_name}
             </Text>
+            {/* Status Indicator */}
+            <View style={styles.statusView}>
+              <View
+                style={[
+                  styles.statusIndicator,
+                  { backgroundColor: statusColor },
+                ]}
+              ></View>
+              <Text style={styles.statusName}>{statusName}</Text>
+            </View>
           </View>
-
-          {/* Status Indicator */}
-          <View
-            style={[styles.statusIndicator, { backgroundColor: statusColor }]}
-          />
         </View>
       </ImageBackground>
     </View>
@@ -47,17 +56,18 @@ const HeaderComponent = ({ user, status }) => {
 
 const styles = {
   container: {
-    height: 100,
+    height: 110,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
   background: {
+    paddingHorizontal: 10,
     flex: 1, // Imposta l'immagine a riempire completamente lo spazio
   },
   content: {
-    flexDirection: "row",
-    justifyContent: "space-between", // Distribuisce gli elementi all'estremità dei contenitori flessibili
-    alignItems: "center",
+    justifyContent: "center", // Spazio tra gli elementi
+    flexDirection: "column",
+    alignItems: "flex-start", // Allinea gli elementi a sinistra
     paddingHorizontal: 10,
     height: "100%", // Altezza del contenitore pari all'altezza del componente
   },
@@ -75,10 +85,20 @@ const styles = {
     fontSize: 20,
     fontWeight: "bold",
   },
+  statusView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   statusIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    marginTop: 5,
+    width: 50,
+    height: 15,
+    borderRadius: 15,
+  },
+  statusName: {
+    color: "#fff",
+    fontWeight: "500", // Semibold
+    marginLeft: 10, // Spazio tra l'indicatore di stato e il nome dello stato
   },
 };
 

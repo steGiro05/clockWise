@@ -7,26 +7,26 @@ import {
   ScrollView,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
-import StatsCard from "../components/StatsCard";
-import RingStatsCard from "../components/RingStatsCard";
 import { useSession } from "../context/SessionContext";
-import { url } from "../components/url";
+import StatsCard from "../components/StatsCard";
+import { MaterialIcons, Feather } from "@expo/vector-icons";
+import url from "../utils/url";
 
-const ProfilePage = () => {
+const ProfilePage = ({ navigation }) => {
   const { user, onLogout } = useAuth();
+  const { session } = useSession();
 
   const { username, first_name, last_name, birthday } = user;
 
   const [userStats, setUserStats] = useState();
   const [error, setError] = useState(false);
 
-  const logout = () => {
-    onLogout();
+  const changePw = () => {
+    navigation.navigate("ChangePw");
   };
 
-  const changePassword = () => {
-    // Implement password change logic here
-    // For example, navigate to a change password page
+  const logout = () => {
+    onLogout();
   };
 
   const fetchUserStats = async () => {
@@ -46,17 +46,13 @@ const ProfilePage = () => {
       const data = await response.json();
 
       // Handle your data here
-      console.log(data);
       setError(false);
 
       return data;
     } catch (error) {
       // Handle the error here
       setError(true);
-      console.error(
-        "There has been a problem with your fetch operation:",
-        error
-      );
+      console.log("There has been a problem with your fetch operation:", error);
     }
   };
 
@@ -71,13 +67,23 @@ const ProfilePage = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [session]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {error && (
-        <View style={{ backgroundColor: "red", padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: "white" }}>Error fetching user stats</Text>
+        <View
+          style={{
+            backgroundColor: "#FFC574",
+            padding: 10,
+            borderRadius: 5,
+            marginBottom: 10,
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "600" }}>
+            Try the application for the first time and you will see your stats
+            here!
+          </Text>
         </View>
       )}
       <Text style={styles.title}>My Account</Text>
@@ -101,34 +107,47 @@ const ProfilePage = () => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={changePassword}
-          style={[styles.button, styles.blueButton]}
-        >
-          <Text style={styles.buttonText}>Change Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={logout}
           style={[styles.button, styles.redButton]}
         >
-          <Text style={styles.buttonText}>Logout</Text>
+          <Text style={[styles.buttonText, { marginRight: 10 }]}>Logout</Text>
+          <MaterialIcons name="logout" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={changePw}
+          style={[styles.button, styles.yellowButton]}
+        >
+          <Text style={[styles.buttonText, { marginRight: 10 }]}>
+            Change Password
+          </Text>
+          <Feather name="edit" size={24} color="white" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>My Stats</Text>
-      <View style={styles.myAccount}>
-        <StatsCard
-          title={"Average entry hour"}
-          data={userStats?.avg_entry_time.split(":").slice(0, 2).join(":")}
-          barColor={"red"}
-        />
-        <StatsCard
-          title={"Average exit hour"}
-          data={userStats?.avg_exit_time.split(":").slice(0, 2).join(":")}
-        />
-        <StatsCard
-          title={"Average break duration"}
-          data={(userStats?.avg_pause_duration / 60).toFixed(2) + " min"}
-        />
-      </View>
+      {!error && (
+        <>
+          <Text style={styles.title}>My Stats</Text>
+          <View style={styles.myAccount}>
+            <StatsCard
+              title={"Average Entry Hour"}
+              data={userStats?.avg_entry_time.split(":").slice(0, 2).join(":")}
+              mainColor={"blue"}
+              backgroundColor={"#EAEFFF"}
+            />
+            <StatsCard
+              title={"Average Exit Hour"}
+              data={userStats?.avg_exit_time.split(":").slice(0, 2).join(":")}
+              mainColor={"red"}
+              backgroundColor={"#FFC8C0"}
+            />
+            <StatsCard
+              title={"Average Break"}
+              data={(userStats?.avg_pause_duration / 60).toFixed(2) + " min"}
+              mainColor={"orange"}
+              backgroundColor={"#FFEEC0"}
+            />
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 };
@@ -166,22 +185,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
+    flexDirection: "row",
     marginTop: 10,
     borderRadius: 10,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginBottom: 15,
   },
   buttonText: {
     fontSize: 16,
     color: "white",
   },
-  blueButton: {
-    backgroundColor: "blue",
-  },
   redButton: {
-    backgroundColor: "red",
+    backgroundColor: "#FF4141",
+  },
+  yellowButton: {
+    backgroundColor: "#FFD700",
   },
 });
 

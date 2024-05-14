@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { url } from "../components/url";
+import url from "../utils/url";
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -61,7 +62,7 @@ export const AuthProvider = ({ children }) => {
       .catch((error) => {
         // Se la risposta non è "ok", questa sezione verrà eseguita
         console.log("Error:", error);
-        return { message: "Unauthorized", status: 401 };
+        return { message: "Wrong username or Password", status: 401 };
       });
   };
 
@@ -80,10 +81,41 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassword = async (oldPw, newPw) => {
+    return await fetch(`${url}/change_password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        new_password: newPw,
+        old_password: oldPw,
+      }),
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // Esci dalla catena di promesse
+          throw new Error("Invalid response");
+        }
+        return response.json();
+      })
+      .then((json) => {
+        setUser(json.user);
+        return { message: "Password changed", status: 200 };
+      })
+      .catch((error) => {
+        // Se la risposta non è "ok", questa sezione verrà eseguita
+        console.log("Error:", error);
+        return { message: "Wrong Password", status: 401 };
+      });
+  };
+
   const value = {
     user,
     onLogin: login,
     onLogout: logout,
+    onChangePassword: changePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

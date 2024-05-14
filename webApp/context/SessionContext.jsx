@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { url } from "../components/url";
+import url from "../utils/url";
 
 const SessionContext = createContext();
 

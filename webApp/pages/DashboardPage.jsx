@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import Calendar from "../components/Calendar";
 import moment from "moment";
-import { url } from "../components/url";
+import url from "../utils/url";
 
 const RecordScreen = ({ record }) => {
   // Verifica se record è definito e gestisce la visualizzazione dei dati
@@ -34,59 +34,52 @@ const RecordScreen = ({ record }) => {
   }
 };
 
-
-
 const DashboardPage = () => {
-  const [record, setRecord] = useState();
   const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
-  const [error, setError] = useState();
-  
-  const fetchRecordData = async () => {
-    try {
-      const response = await fetch(`${url}/get_records?day=${selectedDate}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setRecord(data.message);
-      setError(null);
-    } catch (error) {
-      console.log("There has been a problem with your fetch operation:", error);
-      setError(error);
-    }
-  };
-  
-  const handleDateSelection = async (date) => {
-    setSelectedDate(date.format("YYYY-MM-DD"));
-    await fetchRecordData();
-  };
-  
-  return (
-    <View>
-      <Calendar onDateSelection={handleDateSelection} />
-      {error ? (
-        <Text>There was an error loading the data</Text>
-      ) : (
-        <RecordScreen record={record} />
-      )}
-    </View>
-  );
-};
+  const [records, setRecords] = useState(null);
 
+  const fetchData = async () => {
+    const response = await fetch(`${url}/get_records?day=${selectedDate}`);
+    if (!response.ok) {
+      console.log("Failed to fetch data");
+      setRecords(null);
+      return;
+    }
+    const data = await response.json();
+    setRecords(data.message)
+
+  }
+
+  useEffect(() => {
+    fetchData(selectedDate);
+  }, [selectedDate]); // Aggiunta di selectedDate come dipendenza
+
+  const handleDateSelected = async (date) => {
+    setSelectedDate(date.format("YYYY-MM-DD"));
+    // await fetchData(); // Non è necessario chiamare fetchData qui perché useEffect lo farà quando selectedDate cambierà
+  }
+
+  return (
+      <View>
+          <Text>Dashboard</Text>
+          <Calendar
+              onDateSelected={handleDateSelected}
+              selectedDate={selectedDate}
+          />
+          {records ? (
+              
+              <RecordScreen record={records} />
+              
+          ) : (
+              <View style={styles.noDataContainer}>
+                  <Text>No data available for this day</Text>
+              </View>
+          )}
+      </View>
+  );
+}
 
 export default DashboardPage;
-
-
-/////////////////////////////////////////////////////
-
 
 const styles = StyleSheet.create({
   container: {
@@ -129,4 +122,3 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
 });
-
