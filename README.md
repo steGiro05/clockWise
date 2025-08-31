@@ -37,5 +37,5 @@ Il flusso si basa su **QR code generati dinamicamente** a ogni ingresso, con fun
   - Pagine admin per monitoraggio live  
 
 ---
-###📜 Licenza
+### 📜 Licenza
 MIT License - libero utilizzo e modifica
